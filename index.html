@@ -466,8 +466,8 @@
                     <div class="stat-label">Pedidos Hoje</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value warning" id="totalRecebidoHoje">R$ 0,00</div>
-                    <div class="stat-label">Recebido Hoje</div>
+                    <div class="stat-value warning" id="totalValorRotaHoje">R$ 0,00</div>
+                    <div class="stat-label">Valor das Rotas Hoje</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value negative" id="totalMotoboyReceber">R$ 0,00</div>
@@ -567,12 +567,12 @@
                         <input type="number" id="quantidadePedidos" placeholder="0" min="0">
                     </div>
                     <div class="input-group">
-                        <label for="valorRota">Valor da Rota (R$)</label>
-                        <input type="number" id="valorRota" step="0.01" placeholder="0.00" min="0">
+                        <label for="dinheiroRecebido">💵 Dinheiro Recebido (R$)</label>
+                        <input type="number" id="dinheiroRecebido" step="0.01" placeholder="0.00" min="0">
                     </div>
                     <div class="input-group">
-                        <label for="dinheiroRecebido">Dinheiro Recebido (R$)</label>
-                        <input type="number" id="dinheiroRecebido" step="0.01" placeholder="0.00" min="0">
+                        <label for="valorRota">Valor da Rota (R$)</label>
+                        <input type="number" id="valorRota" step="0.01" placeholder="0.00" min="0">
                     </div>
                     <div class="input-group">
                         <label for="trocos">Trocos (R$)</label>
@@ -581,10 +581,6 @@
                     <div class="input-group">
                         <label for="descontos">Descontos (R$)</label>
                         <input type="number" id="descontos" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="adiantamentos">Adiantamentos (R$)</label>
-                        <input type="number" id="adiantamentos" step="0.01" placeholder="0.00" min="0">
                     </div>
                     <div class="input-group">
                         <label for="dinheiroRetido">Dinheiro Retido (R$)</label>
@@ -609,11 +605,10 @@
                             <th>Data</th>
                             <th>Motoboy</th>
                             <th>Pedidos</th>
+                            <th>Dinheiro Recebido</th>
                             <th>Valor Rota</th>
-                            <th>Recebido</th>
                             <th>Trocos</th>
                             <th>Descontos</th>
-                            <th>Adiantamentos</th>
                             <th>Retido</th>
                             <th>Valor Final a Receber</th>
                             <th>Status</th>
@@ -700,7 +695,7 @@
 
         function configurarEventListeners() {
             // Calcular automaticamente o valor que deve receber
-            ['dinheiroRecebido', 'trocos', 'descontos', 'adiantamentos', 'dinheiroRetido'].forEach(id => {
+            ['valorRota', 'trocos', 'descontos', 'dinheiroRetido'].forEach(id => {
                 document.getElementById(id).addEventListener('input', calcularValorFinalReceber);
             });
         }
@@ -827,13 +822,12 @@
 
         // ROTAS
         function calcularValorFinalReceber() {
-            const dinheiroRecebido = parseFloat(document.getElementById('dinheiroRecebido').value) || 0;
+            const valorRota = parseFloat(document.getElementById('valorRota').value) || 0;
             const trocos = parseFloat(document.getElementById('trocos').value) || 0;
             const descontos = parseFloat(document.getElementById('descontos').value) || 0;
-            const adiantamentos = parseFloat(document.getElementById('adiantamentos').value) || 0;
             const dinheiroRetido = parseFloat(document.getElementById('dinheiroRetido').value) || 0;
             
-            const valorFinalReceber = dinheiroRecebido - trocos - descontos - adiantamentos - dinheiroRetido;
+            const valorFinalReceber = valorRota - trocos - descontos - dinheiroRetido;
             
             document.getElementById('previewCalculo').innerHTML = 
                 valorFinalReceber > 0 ? `💰 Valor Final a Receber: <span style="color: #27ae60;">R$ ${valorFinalReceber.toFixed(2)}</span>` :
@@ -845,11 +839,10 @@
             const motoboyId = document.getElementById('motoboyRota').value;
             const data = document.getElementById('dataRota').value;
             const quantidadePedidos = parseInt(document.getElementById('quantidadePedidos').value) || 0;
-            const valorRota = parseFloat(document.getElementById('valorRota').value) || 0;
             const dinheiroRecebido = parseFloat(document.getElementById('dinheiroRecebido').value) || 0;
+            const valorRota = parseFloat(document.getElementById('valorRota').value) || 0;
             const trocos = parseFloat(document.getElementById('trocos').value) || 0;
             const descontos = parseFloat(document.getElementById('descontos').value) || 0;
-            const adiantamentos = parseFloat(document.getElementById('adiantamentos').value) || 0;
             const dinheiroRetido = parseFloat(document.getElementById('dinheiroRetido').value) || 0;
             const observacoes = document.getElementById('observacoes').value.trim();
 
@@ -859,7 +852,7 @@
             }
 
             const motoboy = motoboys.find(m => m.id == motoboyId);
-            const valorFinalReceber = dinheiroRecebido - trocos - descontos - adiantamentos - dinheiroRetido;
+            const valorFinalReceber = valorRota - trocos - descontos - dinheiroRetido;
 
             const rota = {
                 id: contadorRota++,
@@ -867,11 +860,10 @@
                 motoboyNome: motoboy.nome,
                 data,
                 quantidadePedidos,
-                valorRota,
                 dinheiroRecebido,
+                valorRota,
                 trocos,
                 descontos,
-                adiantamentos,
                 dinheiroRetido,
                 valorFinalReceber,
                 observacoes,
@@ -888,7 +880,7 @@
         }
 
         function limparFormularioRota() {
-            ['motoboyRota', 'quantidadePedidos', 'valorRota', 'dinheiroRecebido', 'trocos', 'descontos', 'adiantamentos', 'dinheiroRetido', 'observacoes'].forEach(id => {
+            ['motoboyRota', 'quantidadePedidos', 'dinheiroRecebido', 'valorRota', 'trocos', 'descontos', 'dinheiroRetido', 'observacoes'].forEach(id => {
                 document.getElementById(id).value = '';
             });
             document.getElementById('dataRota').value = new Date().toISOString().split('T')[0];
@@ -900,7 +892,7 @@
             tabela.innerHTML = '';
 
             if (rotas.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="12" class="empty-state">Nenhuma rota registrada ainda</td></tr>';
+                tabela.innerHTML = '<tr><td colspan="11" class="empty-state">Nenhuma rota registrada ainda</td></tr>';
                 return;
             }
 
@@ -914,11 +906,10 @@
                     <td>${formatarData(rota.data)}</td>
                     <td><strong>${rota.motoboyNome}</strong></td>
                     <td>${rota.quantidadePedidos}</td>
-                    <td>R$ ${rota.valorRota.toFixed(2)}</td>
                     <td>R$ ${rota.dinheiroRecebido.toFixed(2)}</td>
+                    <td>R$ ${rota.valorRota.toFixed(2)}</td>
                     <td>R$ ${rota.trocos.toFixed(2)}</td>
                     <td>R$ ${rota.descontos.toFixed(2)}</td>
-                    <td>R$ ${rota.adiantamentos.toFixed(2)}</td>
                     <td>R$ ${rota.dinheiroRetido.toFixed(2)}</td>
                     <td><strong>R$ ${rota.valorFinalReceber.toFixed(2)}</strong></td>
                     <td><span class="status-badge ${statusClass}">${status}</span></td>
@@ -966,7 +957,7 @@
             
             document.getElementById('totalMotoboysCadastrados').textContent = motoboys.length;
             document.getElementById('totalPedidosHoje').textContent = rotasHoje.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            document.getElementById('totalRecebidoHoje').textContent = `R$ ${rotasHoje.reduce((sum, r) => sum + r.dinheiroRecebido, 0).toFixed(2)}`;
+            document.getElementById('totalValorRotaHoje').textContent = `R$ ${rotasHoje.reduce((sum, r) => sum + r.valorRota, 0).toFixed(2)}`;
             document.getElementById('totalMotoboyReceber').textContent = `R$ ${rotasHoje.filter(r => !r.prestouContas).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0).toFixed(2)}`;
             
             criarGraficos();
@@ -1064,7 +1055,7 @@
             const ctx3 = document.getElementById('chartEvolucao');
             if (ctx3.chart) ctx3.chart.destroy();
             
-            const recebidoPorDia = [];
+            const valorRotaPorDia = [];
             const valorReceberPorDia = [];
             
             for (let i = 6; i >= 0; i--) {
@@ -1073,7 +1064,7 @@
                 const dataStr = data.toISOString().split('T')[0];
                 
                 const rotasDia = rotas.filter(r => r.data === dataStr);
-                recebidoPorDia.push(rotasDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0));
+                valorRotaPorDia.push(rotasDia.reduce((sum, r) => sum + r.valorRota, 0));
                 valorReceberPorDia.push(rotasDia.reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0));
             }
             
@@ -1082,8 +1073,8 @@
                 data: {
                     labels: ultimasSemanas,
                     datasets: [{
-                        label: 'Dinheiro Recebido',
-                        data: recebidoPorDia,
+                        label: 'Valor das Rotas',
+                        data: valorRotaPorDia,
                         borderColor: '#27ae60',
                         backgroundColor: 'rgba(39, 174, 96, 0.1)',
                         tension: 0.4
@@ -1127,10 +1118,10 @@
                 const rotasMotoboy = rotasDoDia.filter(r => r.motoboyId === motoboyId);
                 
                 const totalPedidos = rotasMotoboy.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                const totalRecebido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+                const totalDinheiroRecebido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+                const totalValorRota = rotasMotoboy.reduce((sum, r) => sum + r.valorRota, 0);
                 const totalTrocos = rotasMotoboy.reduce((sum, r) => sum + r.trocos, 0);
                 const totalDescontos = rotasMotoboy.reduce((sum, r) => sum + r.descontos, 0);
-                const totalAdiantamentos = rotasMotoboy.reduce((sum, r) => sum + r.adiantamentos, 0);
                 const totalRetido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRetido, 0);
                 const totalValorFinalReceber = rotasMotoboy.reduce((sum, r) => sum + r.valorFinalReceber, 0);
                 
@@ -1144,12 +1135,12 @@
 
 📊 *RESUMO DO DIA:*
 🛍️ Pedidos Entregues: ${totalPedidos}
-💰 Dinheiro Recebido: R$ ${totalRecebido.toFixed(2)}
+💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
+💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
 
 💸 *DESCONTOS:*
 🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
 💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-⏰ Adiantamentos: R$ ${totalAdiantamentos.toFixed(2)}
 🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
 
 ${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
@@ -1172,8 +1163,12 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
                             <span><strong>${totalPedidos}</strong></span>
                         </div>
                         <div class="financial-row">
-                            <span>💰 Dinheiro Recebido:</span>
-                            <span>R$ ${totalRecebido.toFixed(2)}</span>
+                            <span>💵 Dinheiro Recebido:</span>
+                            <span>R$ ${totalDinheiroRecebido.toFixed(2)}</span>
+                        </div>
+                        <div class="financial-row">
+                            <span>💰 Valor da Rota:</span>
+                            <span>R$ ${totalValorRota.toFixed(2)}</span>
                         </div>
                         <div class="financial-row">
                             <span>🔄 (-) Trocos:</span>
@@ -1182,10 +1177,6 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
                         <div class="financial-row">
                             <span>💳 (-) Descontos:</span>
                             <span>R$ ${totalDescontos.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row">
-                            <span>⏰ (-) Adiantamentos:</span>
-                            <span>R$ ${totalAdiantamentos.toFixed(2)}</span>
                         </div>
                         <div class="financial-row">
                             <span>🏪 (-) Dinheiro Retido:</span>
@@ -1222,10 +1213,10 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
             const rotasDoDia = rotas.filter(r => r.data === data && r.motoboyId === motoboyId);
             
             const totalPedidos = rotasDoDia.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            const totalRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+            const totalDinheiroRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+            const totalValorRota = rotasDoDia.reduce((sum, r) => sum + r.valorRota, 0);
             const totalTrocos = rotasDoDia.reduce((sum, r) => sum + r.trocos, 0);
             const totalDescontos = rotasDoDia.reduce((sum, r) => sum + r.descontos, 0);
-            const totalAdiantamentos = rotasDoDia.reduce((sum, r) => sum + r.adiantamentos, 0);
             const totalRetido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRetido, 0);
             const totalValorFinalReceber = rotasDoDia.reduce((sum, r) => sum + r.valorFinalReceber, 0);
 
@@ -1235,12 +1226,12 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
 
 📊 *RESUMO DO DIA:*
 🛍️ Pedidos Entregues: ${totalPedidos}
-💰 Dinheiro Recebido: R$ ${totalRecebido.toFixed(2)}
+💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
+💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
 
 💸 *DESCONTOS:*
 🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
 💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-⏰ Adiantamentos: R$ ${totalAdiantamentos.toFixed(2)}
 🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
 
 ${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
@@ -1268,10 +1259,10 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
             const rotasDoDia = rotas.filter(r => r.data === data && r.motoboyId === motoboyId);
             
             const totalPedidos = rotasDoDia.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            const totalRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+            const totalDinheiroRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+            const totalValorRota = rotasDoDia.reduce((sum, r) => sum + r.valorRota, 0);
             const totalTrocos = rotasDoDia.reduce((sum, r) => sum + r.trocos, 0);
             const totalDescontos = rotasDoDia.reduce((sum, r) => sum + r.descontos, 0);
-            const totalAdiantamentos = rotasDoDia.reduce((sum, r) => sum + r.adiantamentos, 0);
             const totalRetido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRetido, 0);
             const totalValorFinalReceber = rotasDoDia.reduce((sum, r) => sum + r.valorFinalReceber, 0);
 
@@ -1281,12 +1272,12 @@ _Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_
 
 📊 *RESUMO DO DIA:*
 🛍️ Pedidos Entregues: ${totalPedidos}
-💰 Dinheiro Recebido: R$ ${totalRecebido.toFixed(2)}
+💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
+💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
 
 💸 *DESCONTOS:*
 🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
 💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-⏰ Adiantamentos: R$ ${totalAdiantamentos.toFixed(2)}
 🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
 
 ${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
@@ -1398,7 +1389,8 @@ Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTi
 Total de Motoboys: ${motoboyIds.length}
 Total de Rotas: ${rotasFiltradas.length}
 Total de Pedidos: ${rotasFiltradas.reduce((sum, r) => sum + r.quantidadePedidos, 0)}
-Total Recebido: R$ ${rotasFiltradas.reduce((sum, r) => sum + r.dinheiroRecebido, 0).toFixed(2)}
+Total Dinheiro Recebido: R$ ${rotasFiltradas.reduce((sum, r) => sum + (r.dinheiroRecebido || 0), 0).toFixed(2)}
+Total Valor das Rotas: R$ ${rotasFiltradas.reduce((sum, r) => sum + r.valorRota, 0).toFixed(2)}
 Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0).toFixed(2)}
 
 👥 DETALHAMENTO POR MOTOBOY:
@@ -1412,10 +1404,10 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                 const rotasMotoboy = rotasFiltradas.filter(r => r.motoboyId === motoboyId);
                 
                 const totalPedidos = rotasMotoboy.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                const totalRecebido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
+                const totalDinheiroRecebido = rotasMotoboy.reduce((sum, r) => sum + (r.dinheiroRecebido || 0), 0);
+                const totalValorRota = rotasMotoboy.reduce((sum, r) => sum + r.valorRota, 0);
                 const totalTrocos = rotasMotoboy.reduce((sum, r) => sum + r.trocos, 0);
                 const totalDescontos = rotasMotoboy.reduce((sum, r) => sum + r.descontos, 0);
-                const totalAdiantamentos = rotasMotoboy.reduce((sum, r) => sum + r.adiantamentos, 0);
                 const totalRetido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRetido, 0);
                 const totalValorFinalReceber = rotasMotoboy.reduce((sum, r) => sum + r.valorFinalReceber, 0);
                 const rotasPendentes = rotasMotoboy.filter(r => !r.prestouContas && r.valorFinalReceber > 0).length;
@@ -1423,10 +1415,10 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                 relatorio += `🏍️ ${motoboy.nome}:
   - Rotas Realizadas: ${rotasMotoboy.length}
   - Pedidos Entregues: ${totalPedidos}
-  - Dinheiro Recebido: R$ ${totalRecebido.toFixed(2)}
+  - Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
+  - Valor das Rotas: R$ ${totalValorRota.toFixed(2)}
   - Trocos: R$ ${totalTrocos.toFixed(2)}
   - Descontos: R$ ${totalDescontos.toFixed(2)}
-  - Adiantamentos: R$ ${totalAdiantamentos.toFixed(2)}
   - Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
   - Valor Final a Receber: R$ ${totalValorFinalReceber.toFixed(2)}
   - Rotas Pendentes: ${rotasPendentes}
@@ -1448,8 +1440,8 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                 const motoboy = motoboys.find(m => m.id === id);
                 return motoboy ? motoboy.nome : 'Desconhecido';
             });
-            const recebido = motoboyIds.map(id => 
-                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.dinheiroRecebido, 0)
+            const valorRota = motoboyIds.map(id => 
+                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.valorRota, 0)
             );
             const valorFinalReceber = motoboyIds.map(id => 
                 rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0)
@@ -1460,8 +1452,8 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                 data: {
                     labels: nomes,
                     datasets: [{
-                        label: 'Recebido',
-                        data: recebido,
+                        label: 'Valor das Rotas',
+                        data: valorRota,
                         backgroundColor: '#27ae60'
                     }, {
                         label: 'Valor Final a Receber',
@@ -1486,7 +1478,7 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
             const pedidos = motoboyIds.map(id => 
                 rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.quantidadePedidos, 0)
             );
-            const valorRota = motoboyIds.map(id => 
+            const valorRotaScatter = motoboyIds.map(id => 
                 rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.valorRota, 0)
             );
             
@@ -1497,7 +1489,7 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                         label: 'Motoboys',
                         data: pedidos.map((p, i) => ({
                             x: p,
-                            y: valorRota[i]
+                            y: valorRotaScatter[i]
                         })),
                         backgroundColor: '#3498db',
                         borderColor: '#2980b9'
@@ -1603,13 +1595,12 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                     motoboyNome: 'João Silva',
                     data: hoje.toISOString().split('T')[0],
                     quantidadePedidos: 12,
+                    dinheiroRecebido: 300.00,
                     valorRota: 240.00,
-                    dinheiroRecebido: 180.50,
                     trocos: 15.00,
                     descontos: 8.50,
-                    adiantamentos: 20.00,
                     dinheiroRetido: 0.00,
-                    valorFinalReceber: 137.00,
+                    valorFinalReceber: 216.50,
                     observacoes: 'Rota centro da cidade',
                     prestouContas: false,
                     dataCriacao: hoje
@@ -1620,13 +1611,12 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                     motoboyNome: 'Carlos Santos',
                     data: hoje.toISOString().split('T')[0],
                     quantidadePedidos: 8,
+                    dinheiroRecebido: 200.00,
                     valorRota: 160.00,
-                    dinheiroRecebido: 125.00,
                     trocos: 10.00,
                     descontos: 5.00,
-                    adiantamentos: 0.00,
                     dinheiroRetido: 15.00,
-                    valorFinalReceber: 95.00,
+                    valorFinalReceber: 130.00,
                     observacoes: 'Rota bairro norte',
                     prestouContas: false,
                     dataCriacao: hoje
@@ -1637,13 +1627,12 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                     motoboyNome: 'João Silva',
                     data: ontem.toISOString().split('T')[0],
                     quantidadePedidos: 15,
+                    dinheiroRecebido: 380.00,
                     valorRota: 300.00,
-                    dinheiroRecebido: 220.00,
                     trocos: 20.00,
                     descontos: 12.00,
-                    adiantamentos: 30.00,
                     dinheiroRetido: 0.00,
-                    valorFinalReceber: 158.00,
+                    valorFinalReceber: 268.00,
                     observacoes: 'Dia de muito movimento',
                     prestouContas: true,
                     dataCriacao: ontem
@@ -1654,13 +1643,12 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
                     motoboyNome: 'Pedro Oliveira',
                     data: anteontem.toISOString().split('T')[0],
                     quantidadePedidos: 10,
+                    dinheiroRecebido: 250.00,
                     valorRota: 200.00,
-                    dinheiroRecebido: 150.00,
                     trocos: 12.50,
                     descontos: 7.50,
-                    adiantamentos: 0.00,
                     dinheiroRetido: 25.00,
-                    valorFinalReceber: 105.00,
+                    valorFinalReceber: 155.00,
                     observacoes: 'Rota zona sul',
                     prestouContas: false,
                     dataCriacao: anteontem
@@ -1677,5 +1665,33 @@ Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).r
             atualizarCardsDiarios();
         }
     </script>
+</body>
+      <script>
+    const acesso = localStorage.getItem("autenticado");
+    if (acesso !== "sim") {
+      const senha = prompt("Digite a senha para acessar:");
+      if (senha === "Admin.0258") {
+        localStorage.setItem("autenticado", "sim");
+      } else {
+        alert("Senha incorreta. Redirecionando...");
+        window.location.href = "about:blank";
+      }
+    }
+  </script>
+
+  <h1>Bem-vindo!</h1>
+  <p>Esse conteúdo só aparece após digitar a senha.</p>
+
+  <button onclick="logout()">Sair</button>
+  <script>
+    function logout() {
+      localStorage.removeItem("autenticado");
+      location.reload();
+    }
+
+    function formatarData(data) {
+      return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+    }
+  </script>
 </body>
 </html>
