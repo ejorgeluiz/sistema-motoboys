@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Completo de Gestão de Motoboys - Calçados 24h</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>Calçados 24h - Sistema de Prestação de Contas</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -22,17 +21,17 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
+            border: 1px solid #e5e7eb;
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
         }
 
@@ -42,392 +41,425 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .nav-tabs {
-            background: #34495e;
+        .tabs {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 20px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        .nav-tab {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
+        .tab {
+            padding: 15px 25px;
             cursor: pointer;
+            border: none;
+            background: none;
             font-size: 16px;
+            font-weight: 500;
+            color: #6b7280;
             transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-tab:hover, .nav-tab.active {
+        .tab.active {
+            color: #1f2937;
             background: white;
-            color: #2c3e50;
-            transform: translateY(-2px);
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .tab:hover:not(.active) {
+            background: #f3f4f6;
+            color: #374151;
         }
 
         .tab-content {
             display: none;
-            padding: 30px;
+            padding: 25px;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .positive { color: #27ae60; }
-        .negative { color: #e74c3c; }
-        .warning { color: #f39c12; }
-        .info { color: #3498db; }
-
-        .form-section {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .form-section h2 {
-            color: #2c3e50;
+        /* Estilos da planilha */
+        .spreadsheet-container {
+            overflow-x: auto;
             margin-bottom: 20px;
-            font-size: 1.8em;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+        .spreadsheet {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 1200px;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
+        .spreadsheet th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
             font-weight: 600;
+            border: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .spreadsheet td {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .spreadsheet tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .spreadsheet tr:hover {
+            background: #e3f2fd;
+        }
+
+        .spreadsheet input, .spreadsheet select {
+            width: 100%;
+            border: none;
+            padding: 6px;
+            font-size: 13px;
+            text-align: center;
+            background: transparent;
+        }
+
+        .spreadsheet input:focus, .spreadsheet select:focus {
+            outline: 2px solid #3498db;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .resultado {
+            background: #e8f5e8 !important;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .totals-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .total-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #1f2937;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .total-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-align: center;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .total-item {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 8px;
-            color: #2c3e50;
+            padding: 5px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9em;
         }
 
-        input, select, textarea {
-            padding: 12px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
+            padding: 12px 24px;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.4);
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
         }
 
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 12px;
-            border-radius: 6px;
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
         }
 
-        .motoboy-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        .motoboy-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-        }
-
-        .motoboy-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f1f2f6;
-        }
-
-        .motoboy-name {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-badge.ok {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-badge.devendo {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-badge.credito {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .status-badge.ativo {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-badge.inativo {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .financial-summary {
+        /* Cadastro de motoboys */
+        .motoboy-form {
             background: #f8f9fa;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
             margin-bottom: 15px;
         }
 
-        .financial-row {
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .motoboy-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .motoboy-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.95em;
+            align-items: center;
         }
 
-        .financial-row.total {
-            border-top: 2px solid #ddd;
-            padding-top: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 15px;
-        }
-
-        .whatsapp-card {
-            background: #25d366;
+        .delete-btn {
+            background: #ef4444;
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-family: monospace;
-            font-size: 0.9em;
-            line-height: 1.4;
-            white-space: pre-line;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+            transition: background 0.2s ease;
         }
 
-        .table-container {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
+        .delete-btn:hover {
+            background: #dc2626;
         }
 
-        .table-container h3 {
-            padding: 20px;
-            margin: 0;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e1e8ed;
+        .edit-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s ease;
         }
 
-        table {
+        .edit-btn:hover {
+            background: #2563eb;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Checklist */
+        .checklist-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        th {
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            color: white;
-            padding: 15px 10px;
-            text-align: center;
+        .checklist-table th, .checklist-table td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+
+        .checklist-table th {
+            background: #f9fafb;
             font-weight: 600;
-            font-size: 14px;
+            color: #374151;
         }
 
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #e1e8ed;
-            text-align: center;
-            font-size: 14px;
+        .checklist-table tr:nth-child(even) {
+            background: #f9fafb;
         }
 
-        tr:hover td {
-            background-color: #f8f9fa;
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
 
-        .chart-container {
+        /* Modal para relatório */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .report-content {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .prestacao-card {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid #3498db;
         }
 
-        .chart-container h3 {
-            margin-bottom: 20px;
+        .prestacao-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prestacao-details {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .prestacao-details .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+
+        .prestacao-details .item.total {
+            font-weight: bold;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 10px;
+            padding-top: 10px;
             color: #2c3e50;
         }
 
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+        .prestacao-details .rota-group {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
 
-        .filters {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 1.2em;
-            padding: 40px;
+        .prestacao-details .rota-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 8px;
         }
 
         @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
             .header h1 {
                 font-size: 1.8em;
             }
             
-            .nav-tabs {
+            .controls {
                 flex-direction: column;
-                align-items: center;
             }
             
-            .form-grid {
+            .totals-section {
                 grid-template-columns: 1fr;
-            }
-            
-            .motoboy-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .actions {
-                flex-direction: column;
             }
         }
     </style>
@@ -435,1238 +467,1050 @@
 <body>
     <div class="container">
         <div class="header">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
-                <div style="font-size: 2.2em; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
-                    <span style="color: #ffffff;">Calçados</span> 
-                    <span style="color: #ff4444;">24h</span>
-                </div>
-                <div style="width: 2px; height: 40px; background: rgba(255,255,255,0.3);"></div>
-                <h1 style="margin: 0;">🏍️ Sistema de Gestão de Motoboys</h1>
-            </div>
-            <p>Controle Completo com Dashboards e Relatórios</p>
+            <h1>📊 Calçados 24h</h1>
+            <p>Sistema de Prestação de Contas</p>
         </div>
 
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
-            <button class="nav-tab" onclick="showTab('motoboys')">👥 Motoboys</button>
-            <button class="nav-tab" onclick="showTab('rotas')">🛣️ Rotas</button>
-            <button class="nav-tab" onclick="showTab('daily-cards')">💬 Cards Diários</button>
-            <button class="nav-tab" onclick="showTab('reports')">📈 Relatórios</button>
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('planilha')">📋 Planilha</button>
+            <button class="tab" onclick="showTab('motoboys')">🏍️ Motoboys</button>
+            <button class="tab" onclick="showTab('checklist')">✅ Checklist Bling</button>
         </div>
 
-        <!-- DASHBOARD -->
-        <div id="dashboard" class="tab-content active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value info" id="totalMotoboysCadastrados">0</div>
-                    <div class="stat-label">Motoboys Cadastrados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value positive" id="totalPedidosHoje">0</div>
-                    <div class="stat-label">Pedidos Hoje</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value warning" id="totalValorRotaHoje">R$ 0,00</div>
-                    <div class="stat-label">Valor das Rotas Hoje</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value negative" id="totalMotoboyReceber">R$ 0,00</div>
-                    <div class="stat-label">Valor Final a Receber Hoje</div>
-                </div>
+        <!-- Aba Planilha -->
+        <div id="planilha" class="tab-content active">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="addRow()">➕ Adicionar Linha</button>
+                <button class="btn btn-success" onclick="showReportOptions()">📊 Relatórios</button>
+                <button class="btn btn-warning" onclick="exportToExcel()">📄 Exportar Excel</button>
+                <button class="btn btn-primary" onclick="clearData()">🗑️ Limpar Dados</button>
             </div>
 
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <h3>📊 Pedidos por Dia (Última Semana)</h3>
-                    <canvas id="chartPedidosDiarios" width="400" height="200"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h3>💰 Performance dos Motoboys</h3>
-                    <canvas id="chartPerformance" width="400" height="200"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h3>📈 Evolução Financeira Semanal</h3>
-                <canvas id="chartEvolucao" width="800" height="300"></canvas>
-            </div>
-        </div>
-
-        <!-- MOTOBOYS -->
-        <div id="motoboys" class="tab-content">
-            <div class="form-section">
-                <h2>👤 Cadastrar Novo Motoboy</h2>
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label for="nomeCompleto">Nome Completo</label>
-                        <input type="text" id="nomeCompleto" placeholder="Nome completo do motoboy">
-                    </div>
-                    <div class="input-group">
-                        <label for="telefone">Telefone/WhatsApp</label>
-                        <input type="tel" id="telefone" placeholder="(11) 99999-9999">
-                    </div>
-                    <div class="input-group">
-                        <label for="cnh">CNH</label>
-                        <input type="text" id="cnh" placeholder="Número da CNH">
-                    </div>
-                    <div class="input-group">
-                        <label for="veiculo">Veículo</label>
-                        <input type="text" id="veiculo" placeholder="Marca/Modelo da moto">
-                    </div>
-                    <div class="input-group">
-                        <label for="placa">Placa</label>
-                        <input type="text" id="placa" placeholder="ABC-1234">
-                    </div>
-                    <div class="input-group">
-                        <label for="dataAdmissao">Data de Admissão</label>
-                        <input type="date" id="dataAdmissao">
-                    </div>
-                </div>
-                <button class="btn btn-success" onclick="cadastrarMotoboy()">➕ Cadastrar Motoboy</button>
-            </div>
-
-            <div class="table-container">
-                <h3>👥 Motoboys Cadastrados</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Telefone</th>
-                            <th>CNH</th>
-                            <th>Veículo</th>
-                            <th>Placa</th>
-                            <th>Admissão</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaMotoboys">
-                        <!-- Dados serão inseridos aqui -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ROTAS -->
-        <div id="rotas" class="tab-content">
-            <div class="form-section">
-                <h2>🛣️ Registrar Rota</h2>
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label for="motoboyRota">Motoboy</label>
-                        <select id="motoboyRota">
-                            <option value="">Selecione o motoboy</option>
+            <!-- Filtros de Relatório -->
+            <div id="reportFilters" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3>📊 Opções de Relatório</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                    <div class="form-group">
+                        <label>Motoboy:</label>
+                        <select id="filterMotoboy">
+                            <option value="">Todos</option>
                         </select>
                     </div>
-                    <div class="input-group">
-                        <label for="dataRota">Data</label>
-                        <input type="date" id="dataRota">
-                    </div>
-                    <div class="input-group">
-                        <label for="quantidadePedidos">Qtd. Pedidos</label>
-                        <input type="number" id="quantidadePedidos" placeholder="0" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="dinheiroRecebido">💵 Dinheiro Recebido (R$)</label>
-                        <input type="number" id="dinheiroRecebido" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="valorRota">Valor da Rota (R$)</label>
-                        <input type="number" id="valorRota" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="trocos">Trocos (R$)</label>
-                        <input type="number" id="trocos" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="descontos">Descontos (R$)</label>
-                        <input type="number" id="descontos" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="dinheiroRetido">Dinheiro Retido (R$)</label>
-                        <input type="number" id="dinheiroRetido" step="0.01" placeholder="0.00" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label for="observacoes">Observações</label>
-                        <textarea id="observacoes" rows="3" placeholder="Observações da rota"></textarea>
+                    <div class="form-group">
+                        <label>Período:</label>
+                        <select id="filterPeriodo" onchange="toggleDateInputs()">
+                            <option value="hoje">Hoje</option>
+                            <option value="ontem">Ontem</option>
+                            <option value="semana">Esta Semana</option>
+                            <option value="mes">Este Mês</option>
+                            <option value="intervalo">Intervalo Personalizado</option>
+                        </select>
                     </div>
                 </div>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                    <button class="btn" onclick="adicionarRota()">➕ Registrar Rota</button>
-                    <div id="previewCalculo" style="padding: 15px; background: #f8f9fa; border-radius: 8px; font-weight: bold; min-width: 200px;"></div>
+                <div id="dateInputs" style="display: none; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+                    <div class="form-group">
+                        <label>Data Inicial:</label>
+                        <input type="date" id="dataInicial">
+                    </div>
+                    <div class="form-group">
+                        <label>Data Final:</label>
+                        <input type="date" id="dataFinal">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-success" onclick="generateFilteredReport()">Gerar Relatório</button>
+                    <button class="btn btn-primary" onclick="generateCards()">Gerar Cards</button>
+                    <button class="btn btn-secondary" onclick="generateWhatsAppCards()">📱 Cards WhatsApp</button>
+                    <button class="btn" onclick="hideReportOptions()" style="background: #6c757d; color: white;">Cancelar</button>
                 </div>
             </div>
 
-            <div class="table-container">
-                <h3>🛣️ Rotas Registradas</h3>
-                <table>
+            <div class="spreadsheet-container">
+                <table class="spreadsheet" id="mainTable">
                     <thead>
                         <tr>
                             <th>Data</th>
                             <th>Motoboy</th>
-                            <th>Pedidos</th>
-                            <th>Dinheiro Recebido</th>
-                            <th>Valor Rota</th>
-                            <th>Trocos</th>
-                            <th>Descontos</th>
-                            <th>Retido</th>
-                            <th>Valor Final a Receber</th>
+                            <th>Rota</th>
                             <th>Status</th>
+                            <th>Nº Pedido</th>
+                            <th>Dinheiro Recebido</th>
+                            <th>Valor da Rota</th>
+                            <th>Desconto</th>
+                            <th>Troco</th>
+                            <th>Dinheiro Retido</th>
+                            <th>Resultado</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="tabelaRotas">
-                        <!-- Dados serão inseridos aqui -->
+                    <tbody id="tableBody">
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- CARDS DIÁRIOS -->
-        <div id="daily-cards" class="tab-content">
-            <div class="filters">
-                <label>Filtrar por data:</label>
-                <input type="date" id="filtroData" onchange="atualizarCardsDiarios()">
-                <button class="btn btn-success" onclick="copiarTodosCards()">📋 Copiar Todos os Cards</button>
-                <button class="btn btn-warning" onclick="enviarTodosWhatsApp()">📱 Enviar Todos via WhatsApp</button>
+            <div class="totals-section" id="totalsSection">
             </div>
 
-            <div class="motoboy-cards" id="cardsDiarios">
-                <!-- Cards serão gerados aqui -->
+            <!-- Cards de Prestação -->
+            <div id="cardsSection" style="display: none;">
+                <h3>📋 Cards de Prestação de Contas</h3>
+                <div class="cards-container" id="cardsContainer">
+                </div>
             </div>
         </div>
 
-        <!-- RELATÓRIOS -->
-        <div id="reports" class="tab-content">
-            <div class="filters">
-                <label>Tipo de Relatório:</label>
-                <select id="tipoRelatorio">
-                    <option value="diario">Relatório Diário</option>
-                    <option value="semanal">Relatório Semanal</option>
-                    <option value="mensal">Relatório Mensal</option>
-                </select>
-                
-                <label>Data:</label>
-                <input type="date" id="dataRelatorio">
-                
-                <button class="btn" onclick="gerarRelatorio()">📊 Gerar Relatório</button>
-                <button class="btn btn-success" onclick="baixarRelatorio()">💾 Baixar Relatório</button>
+        <!-- Aba Motoboys -->
+        <div id="motoboys" class="tab-content">
+            <div class="motoboy-form">
+                <h3>Cadastrar Novo Motoboy</h3>
+                <div class="form-group">
+                    <label for="newMotoboy">Nome do Motoboy:</label>
+                    <input type="text" id="newMotoboy" placeholder="Digite o nome do motoboy">
+                </div>
+                <button class="btn btn-primary" onclick="addMotoboy()">Adicionar Motoboy</button>
             </div>
 
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <h3>📊 Resumo Financeiro por Motoboy</h3>
-                    <canvas id="chartRelatorioFinanceiro" width="400" height="200"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h3>📈 Produtividade (Pedidos x Valor)</h3>
-                    <canvas id="chartProdutividade" width="400" height="200"></canvas>
-                </div>
+            <h3>Motoboys Cadastrados</h3>
+            <div class="motoboy-list" id="motoboyList">
             </div>
+        </div>
 
-            <div id="relatorioTexto" class="form-section" style="display: none;">
-                <h3>📄 Relatório Detalhado</h3>
-                <div id="conteudoRelatorio" style="font-family: monospace; white-space: pre-line; background: #f8f9fa; padding: 20px; border-radius: 10px;"></div>
-            </div>
+        <!-- Aba Checklist -->
+        <div id="checklist" class="tab-content">
+            <h3>Checklist Bling - Conferência de Pedidos</h3>
+            <table class="checklist-table" id="checklistTable">
+                <thead>
+                    <tr>
+                        <th>Nº Pedido</th>
+                        <th>Conferido?</th>
+                        <th>Formas de Pagamento</th>
+                        <th>Valor Total</th>
+                        <th>Data</th>
+                        <th>Observações</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="checklistBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para relatório -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📊 Relatório por Rota</h2>
+            <div class="report-content" id="reportContent"></div>
+            <button class="btn btn-primary" onclick="copyReport()">📋 Copiar para WhatsApp</button>
         </div>
     </div>
 
     <script>
-        // Variáveis globais
+        // Dados globais
+        let data = [];
         let motoboys = [];
-        let rotas = [];
-        let contadorMotoboy = 1;
-        let contadorRota = 1;
+        let checklist = [];
+        const rotas = ['1', '2', '3', 'Única', 'Rota do dia'];
+        const formasPagamento = ['Pix', 'Dinheiro', 'Cartão Débito', 'Cartão Crédito', 'Transferência', 'Outro'];
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            inicializarDatas();
-            carregarDadosExemplo();
-            configurarEventListeners();
+            loadStoredData();
+            loadData();
+            updateMotoboyList();
+            updateChecklist();
+            
+            // Adicionar uma linha inicial se não houver dados
+            if (data.length === 0) {
+                addRow();
+            }
         });
 
-        function inicializarDatas() {
-            const hoje = new Date().toISOString().split('T')[0];
-            document.getElementById('dataAdmissao').value = hoje;
-            document.getElementById('dataRota').value = hoje;
-            document.getElementById('filtroData').value = hoje;
-            document.getElementById('dataRelatorio').value = hoje;
+        // Carregar dados do armazenamento (usando variáveis JavaScript em vez de localStorage)
+        function loadStoredData() {
+            // Dados serão mantidos apenas durante a sessão
+            if (typeof window.calcados24h_data === 'undefined') {
+                data = [];
+                motoboys = [];
+                checklist = [];
+            } else {
+                data = window.calcados24h_data || [];
+                motoboys = window.calcados24h_motoboys || [];
+                checklist = window.calcados24h_checklist || [];
+            }
         }
 
-        function configurarEventListeners() {
-            // Calcular automaticamente o valor que deve receber
-            ['valorRota', 'trocos', 'descontos', 'dinheiroRetido'].forEach(id => {
-                document.getElementById(id).addEventListener('input', calcularValorFinalReceber);
-            });
-        }
-
-        // NAVEGAÇÃO
-        function showTab(tabId) {
-            // Esconder todas as abas
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
+        // Função para mostrar abas
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            // Remover classe active de todos os botões
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Mostrar aba selecionada
-            document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-            
-            // Atualizar conteúdo específico da aba
-            if (tabId === 'dashboard') {
-                atualizarDashboard();
-            } else if (tabId === 'daily-cards') {
-                atualizarCardsDiarios();
-            }
+            document.getElementById(tabName).classList.add('active');
         }
 
-        // CADASTRO DE MOTOBOYS
-        function cadastrarMotoboy() {
-            const nome = document.getElementById('nomeCompleto').value.trim();
-            const telefone = document.getElementById('telefone').value.trim();
-            const cnh = document.getElementById('cnh').value.trim();
-            const veiculo = document.getElementById('veiculo').value.trim();
-            const placa = document.getElementById('placa').value.trim();
-            const dataAdmissao = document.getElementById('dataAdmissao').value;
-
-            if (!nome || !telefone) {
-                alert('Por favor, preencha pelo menos o nome e telefone!');
-                return;
-            }
-
-            const motoboy = {
-                id: contadorMotoboy++,
-                nome,
-                telefone,
-                cnh,
-                veiculo,
-                placa,
-                dataAdmissao,
-                status: 'ativo',
-                dataCadastro: new Date()
+        // Função para adicionar linha
+        function addRow() {
+            const newId = Date.now();
+            const today = new Date().toLocaleDateString('pt-BR');
+            const newRow = {
+                id: newId,
+                data: today,
+                motoboy: '',
+                rota: '',
+                status: 'Pendente',
+                pedido: '',
+                dinheiroRecebido: 0,
+                valorRota: 0,
+                desconto: 0,
+                troco: 0,
+                dinheiroRetido: 0
             };
-
-            motoboys.push(motoboy);
-            atualizarTabelaMotoboys();
-            atualizarSelectMotoboys();
-            limparFormularioMotoboy();
-            atualizarDashboard();
-            alert(`Motoboy ${nome} cadastrado com sucesso!`);
+            
+            data.push(newRow);
+            saveData();
+            loadData();
+            
+            // Focar no primeiro campo da nova linha
+            setTimeout(() => {
+                const lastRow = document.querySelector('#tableBody tr:last-child');
+                if (lastRow) {
+                    const firstInput = lastRow.querySelector('input[type="date"]');
+                    if (firstInput) firstInput.focus();
+                }
+            }, 100);
         }
 
-        function limparFormularioMotoboy() {
-            ['nomeCompleto', 'telefone', 'cnh', 'veiculo', 'placa'].forEach(id => {
-                document.getElementById(id).value = '';
-            });
-            document.getElementById('dataAdmissao').value = new Date().toISOString().split('T')[0];
-        }
+        // Função para carregar dados na tabela
+        function loadData() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
 
-        function atualizarTabelaMotoboys() {
-            const tabela = document.getElementById('tabelaMotoboys');
-            tabela.innerHTML = '';
-
-            if (motoboys.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="8" class="empty-state">Nenhum motoboy cadastrado ainda</td></tr>';
-                return;
-            }
-
-            motoboys.forEach(motoboy => {
+            data.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${motoboy.nome}</strong></td>
-                    <td>${motoboy.telefone}</td>
-                    <td>${motoboy.cnh}</td>
-                    <td>${motoboy.veiculo}</td>
-                    <td>${motoboy.placa}</td>
-                    <td>${formatarData(motoboy.dataAdmissao)}</td>
-                    <td><span class="status-badge ${motoboy.status}">${motoboy.status.toUpperCase()}</span></td>
+                    <td><input type="date" value="${row.data ? convertDateToInput(row.data) : ''}" onchange="updateData(${index}, 'data', new Date(this.value).toLocaleDateString('pt-BR'))" onkeydown="handleKeyNav(event, ${index}, 0)"></td>
                     <td>
-                        <div class="actions">
-                            <button class="btn btn-warning btn-small" onclick="editarMotoboy(${motoboy.id})" title="Editar">✏️</button>
-                            <button class="btn btn-danger btn-small" onclick="removerMotoboy(${motoboy.id})" title="Remover">🗑️</button>
+                        <select onchange="updateData(${index}, 'motoboy', this.value)" onkeydown="handleKeyNav(event, ${index}, 1)">
+                            <option value="">Selecione...</option>
+                            ${motoboys.map(m => `<option value="${m}" ${row.motoboy === m ? 'selected' : ''}>${m}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select onchange="updateData(${index}, 'rota', this.value)" onkeydown="handleKeyNav(event, ${index}, 2)">
+                            <option value="">Selecione...</option>
+                            ${rotas.map(r => `<option value="${r}" ${row.rota === r ? 'selected' : ''}>${r}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select onchange="updateData(${index}, 'status', this.value)" onkeydown="handleKeyNav(event, ${index}, 3)">
+                            <option value="OK" ${row.status === 'OK' ? 'selected' : ''}>OK</option>
+                            <option value="Pendente" ${row.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                        </select>
+                    </td>
+                    <td><input type="text" value="${row.pedido || ''}" onchange="updateData(${index}, 'pedido', this.value)" onkeydown="handleKeyNav(event, ${index}, 4)"></td>
+                    <td><input type="number" step="0.01" value="${row.dinheiroRecebido || 0}" onchange="updateData(${index}, 'dinheiroRecebido', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 5)"></td>
+                    <td><input type="number" step="0.01" value="${row.valorRota || 0}" onchange="updateData(${index}, 'valorRota', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 6)"></td>
+                    <td><input type="number" step="0.01" value="${row.desconto || 0}" onchange="updateData(${index}, 'desconto', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 7)"></td>
+                    <td><input type="number" step="0.01" value="${row.troco || 0}" onchange="updateData(${index}, 'troco', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 8)"></td>
+                    <td><input type="number" step="0.01" value="${row.dinheiroRetido || 0}" onchange="updateData(${index}, 'dinheiroRetido', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 9)"></td>
+                    <td class="resultado">R$ ${calculateResult(row).toFixed(2)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="edit-btn" onclick="editRow(${index})" title="Editar">✏️</button>
+                            <button class="delete-btn" onclick="deleteRow(${index})" title="Excluir">🗑️</button>
                         </div>
                     </td>
                 `;
-                tabela.appendChild(tr);
+                tbody.appendChild(tr);
             });
+
+            updateTotals();
         }
 
-        function atualizarSelectMotoboys() {
-            const select = document.getElementById('motoboyRota');
-            select.innerHTML = '<option value="">Selecione o motoboy</option>';
-            
-            motoboys.filter(m => m.status === 'ativo').forEach(motoboy => {
-                const option = document.createElement('option');
-                option.value = motoboy.id;
-                option.textContent = motoboy.nome;
-                select.appendChild(option);
-            });
-        }
-
-        function removerMotoboy(id) {
-            if (confirm('Tem certeza que deseja remover este motoboy?')) {
-                motoboys = motoboys.filter(m => m.id !== id);
-                atualizarTabelaMotoboys();
-                atualizarSelectMotoboys();
-                atualizarDashboard();
+        // Converter data para formato de input
+        function convertDateToInput(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
             }
+            return '';
         }
 
-        function editarMotoboy(id) {
-            alert('Função de edição será implementada em breve!');
-        }
-
-        // ROTAS
-        function calcularValorFinalReceber() {
-            const valorRota = parseFloat(document.getElementById('valorRota').value) || 0;
-            const trocos = parseFloat(document.getElementById('trocos').value) || 0;
-            const descontos = parseFloat(document.getElementById('descontos').value) || 0;
-            const dinheiroRetido = parseFloat(document.getElementById('dinheiroRetido').value) || 0;
-            
-            const valorFinalReceber = valorRota - trocos - descontos - dinheiroRetido;
-            
-            document.getElementById('previewCalculo').innerHTML = 
-                valorFinalReceber > 0 ? `💰 Valor Final a Receber: <span style="color: #27ae60;">R$ ${valorFinalReceber.toFixed(2)}</span>` :
-                valorFinalReceber < 0 ? `💸 Empresa Deve: <span style="color: #e74c3c;">R$ ${Math.abs(valorFinalReceber).toFixed(2)}</span>` :
-                `✅ Contas Zeradas`;
-        }
-
-        function adicionarRota() {
-            const motoboyId = document.getElementById('motoboyRota').value;
-            const data = document.getElementById('dataRota').value;
-            const quantidadePedidos = parseInt(document.getElementById('quantidadePedidos').value) || 0;
-            const dinheiroRecebido = parseFloat(document.getElementById('dinheiroRecebido').value) || 0;
-            const valorRota = parseFloat(document.getElementById('valorRota').value) || 0;
-            const trocos = parseFloat(document.getElementById('trocos').value) || 0;
-            const descontos = parseFloat(document.getElementById('descontos').value) || 0;
-            const dinheiroRetido = parseFloat(document.getElementById('dinheiroRetido').value) || 0;
-            const observacoes = document.getElementById('observacoes').value.trim();
-
-            if (!motoboyId || !data || quantidadePedidos === 0) {
-                alert('Por favor, preencha os campos obrigatórios: Motoboy, Data e Quantidade de Pedidos!');
-                return;
-            }
-
-            const motoboy = motoboys.find(m => m.id == motoboyId);
-            const valorFinalReceber = valorRota - trocos - descontos - dinheiroRetido;
-
-            const rota = {
-                id: contadorRota++,
-                motoboyId: parseInt(motoboyId),
-                motoboyNome: motoboy.nome,
-                data,
-                quantidadePedidos,
-                dinheiroRecebido,
-                valorRota,
-                trocos,
-                descontos,
-                dinheiroRetido,
-                valorFinalReceber,
-                observacoes,
-                prestouContas: false,
-                dataCriacao: new Date()
-            };
-
-            rotas.push(rota);
-            atualizarTabelaRotas();
-            limparFormularioRota();
-            atualizarDashboard();
-            atualizarCardsDiarios();
-            alert('Rota registrada com sucesso!');
-        }
-
-        function limparFormularioRota() {
-            ['motoboyRota', 'quantidadePedidos', 'dinheiroRecebido', 'valorRota', 'trocos', 'descontos', 'dinheiroRetido', 'observacoes'].forEach(id => {
-                document.getElementById(id).value = '';
-            });
-            document.getElementById('dataRota').value = new Date().toISOString().split('T')[0];
-            document.getElementById('previewCalculo').innerHTML = '';
-        }
-
-        function atualizarTabelaRotas() {
-            const tabela = document.getElementById('tabelaRotas');
-            tabela.innerHTML = '';
-
-            if (rotas.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="11" class="empty-state">Nenhuma rota registrada ainda</td></tr>';
-                return;
-            }
-
-            rotas.slice().reverse().forEach(rota => {
-                const tr = document.createElement('tr');
+        // Navegação por teclado
+        function handleKeyNav(event, rowIndex, colIndex) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const nextCol = colIndex + 1;
+                const maxCols = 10; // número de colunas editáveis
                 
-                const status = rota.prestouContas ? 'OK' : (rota.valorFinalReceber > 0 ? 'RECEBER' : rota.valorFinalReceber < 0 ? 'EMPRESA DEVE' : 'OK');
-                const statusClass = rota.prestouContas ? 'ok' : (rota.valorFinalReceber > 0 ? 'credito' : rota.valorFinalReceber < 0 ? 'devendo' : 'ok');
+                if (nextCol < maxCols) {
+                    // Próxima coluna
+                    const nextInput = document.querySelector(`#tableBody tr:nth-child(${rowIndex + 1}) td:nth-child(${nextCol + 1}) input, #tableBody tr:nth-child(${rowIndex + 1}) td:nth-child(${nextCol + 1}) select`);
+                    if (nextInput) nextInput.focus();
+                } else {
+                    // Próxima linha, primeira coluna
+                    const nextRowInput = document.querySelector(`#tableBody tr:nth-child(${rowIndex + 2}) td:first-child input`);
+                    if (nextRowInput) {
+                        nextRowInput.focus();
+                    } else {
+                        // Se não há próxima linha, criar uma nova
+                        addRow();
+                    }
+                }
+            }
+        }
 
-                tr.innerHTML = `
-                    <td>${formatarData(rota.data)}</td>
-                    <td><strong>${rota.motoboyNome}</strong></td>
-                    <td>${rota.quantidadePedidos}</td>
-                    <td>R$ ${rota.dinheiroRecebido.toFixed(2)}</td>
-                    <td>R$ ${rota.valorRota.toFixed(2)}</td>
-                    <td>R$ ${rota.trocos.toFixed(2)}</td>
-                    <td>R$ ${rota.descontos.toFixed(2)}</td>
-                    <td>R$ ${rota.dinheiroRetido.toFixed(2)}</td>
-                    <td><strong>R$ ${rota.valorFinalReceber.toFixed(2)}</strong></td>
-                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+        // Função para calcular resultado
+        function calculateResult(row) {
+            const valorRota = parseFloat(row.valorRota) || 0;
+            const desconto = parseFloat(row.desconto) || 0;
+            const troco = parseFloat(row.troco) || 0;
+            const dinheiroRetido = parseFloat(row.dinheiroRetido) || 0;
+            
+            return valorRota - desconto - troco - dinheiroRetido;
+        }
+
+        // Função para atualizar dados
+        function updateData(index, field, value) {
+            if (data[index]) {
+                data[index][field] = value;
+                saveData();
+                loadData();
+                updateChecklist();
+            }
+        }
+
+        // Função para editar linha
+        function editRow(index) {
+            const row = data[index];
+            const newData = prompt(`Editando dados do pedido ${row.pedido || 'sem número'}:\n\nDigite os novos valores separados por vírgula na ordem:\nData, Motoboy, Rota, Status, Pedido, Dinheiro Recebido, Valor Rota, Desconto, Troco, Dinheiro Retido`, 
+                `${row.data || ''}, ${row.motoboy || ''}, ${row.rota || ''}, ${row.status || 'Pendente'}, ${row.pedido || ''}, ${row.dinheiroRecebido || 0}, ${row.valorRota || 0}, ${row.desconto || 0}, ${row.troco || 0}, ${row.dinheiroRetido || 0}`);
+            
+            if (newData !== null) {
+                const values = newData.split(',').map(v => v.trim());
+                if (values.length >= 10) {
+                    data[index] = {
+                        ...row,
+                        data: values[0] || row.data,
+                        motoboy: values[1] || row.motoboy,
+                        rota: values[2] || row.rota,
+                        status: values[3] || row.status,
+                        pedido: values[4] || row.pedido,
+                        dinheiroRecebido: parseFloat(values[5]) || 0,
+                        valorRota: parseFloat(values[6]) || 0,
+                        desconto: parseFloat(values[7]) || 0,
+                        troco: parseFloat(values[8]) || 0,
+                        dinheiroRetido: parseFloat(values[9]) || 0
+                    };
+                    saveData();
+                    loadData();
+                    updateChecklist();
+                }
+            }
+        }
+
+        function deleteRow(index) {
+            if (confirm('Tem certeza que deseja excluir esta linha?')) {
+                data.splice(index, 1);
+                saveData();
+                loadData();
+                updateChecklist();
+            }
+        }
+
+        // Função para atualizar totais
+        function updateTotals() {
+            const totalsSection = document.getElementById('totalsSection');
+            
+            // Totais por motoboy
+            const motoboyTotals = {};
+            data.forEach(row => {
+                if (row.motoboy) {
+                    if (!motoboyTotals[row.motoboy]) {
+                        motoboyTotals[row.motoboy] = 0;
+                    }
+                    motoboyTotals[row.motoboy] += calculateResult(row);
+                }
+            });
+
+            // Totais por rota
+            const rotaTotals = {};
+            data.forEach(row => {
+                if (row.rota) {
+                    if (!rotaTotals[row.rota]) {
+                        rotaTotals[row.rota] = 0;
+                    }
+                    rotaTotals[row.rota] += calculateResult(row);
+                }
+            });
+
+            // Total geral
+            const totalGeral = data.reduce((sum, row) => sum + calculateResult(row), 0);
+
+            totalsSection.innerHTML = `
+                <div class="total-card">
+                    <h3>💰 Totais por Motoboy</h3>
+                    ${Object.entries(motoboyTotals).map(([motoboy, total]) => 
+                        `<div class="total-item"><span>${motoboy}:</span><span>R$ ${total.toFixed(2)}</span></div>`
+                    ).join('')}
+                </div>
+                <div class="total-card">
+                    <h3>🛣️ Totais por Rota</h3>
+                    ${Object.entries(rotaTotals).map(([rota, total]) => 
+                        `<div class="total-item"><span>Rota ${rota}:</span><span>R$ ${total.toFixed(2)}</span></div>`
+                    ).join('')}
+                </div>
+                <div class="total-card">
+                    <h3>📊 Total Geral</h3>
+                    <div class="total-item"><span><strong>TOTAL:</strong></span><span><strong>R$ ${totalGeral.toFixed(2)}</strong></span></div>
+                </div>
+            `;
+        }
+
+        // Função para adicionar motoboy
+        function addMotoboy() {
+            const input = document.getElementById('newMotoboy');
+            const name = input.value.trim();
+            
+            if (name && !motoboys.includes(name)) {
+                motoboys.push(name);
+                saveMotoboys();
+                updateMotoboyList();
+                loadData(); // Recarregar para atualizar dropdowns
+                input.value = '';
+            } else if (motoboys.includes(name)) {
+                alert('Este motoboy já está cadastrado!');
+            }
+        }
+
+        // Função para atualizar lista de motoboys
+        function updateMotoboyList() {
+            const list = document.getElementById('motoboyList');
+            list.innerHTML = motoboys.map((motoboy, index) => `
+                <div class="motoboy-item">
+                    <span>${motoboy}</span>
+                    <button class="delete-btn" onclick="deleteMotoboy(${index})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // Função para deletar motoboy
+        function deleteMotoboy(index) {
+            if (confirm('Tem certeza que deseja excluir este motoboy?')) {
+                motoboys.splice(index, 1);
+                saveMotoboys();
+                updateMotoboyList();
+                loadData();
+            }
+        }
+
+        // Função para atualizar checklist
+        function updateChecklist() {
+            const checklistBody = document.getElementById('checklistBody');
+            
+            // Adicionar pedidos que não estão no checklist
+            data.forEach(row => {
+                if (row.pedido && !checklist.find(c => c.pedido === row.pedido)) {
+                    checklist.push({
+                        pedido: row.pedido,
+                        conferido: false,
+                        formasPagamento: [],
+                        valorTotal: parseFloat(row.valorRota) || 0,
+                        data: new Date().toLocaleDateString('pt-BR'),
+                        observacoes: ''
+                    });
+                }
+            });
+
+            // Remover pedidos que não existem mais
+            checklist = checklist.filter(c => data.find(d => d.pedido === c.pedido));
+
+            checklistBody.innerHTML = checklist.map((item, index) => `
+                <tr>
+                    <td>${item.pedido}</td>
+                    <td><input type="checkbox" class="checkbox" ${item.conferido ? 'checked' : ''} onchange="updateChecklistItem(${index}, 'conferido', this.checked)"></td>
                     <td>
-                        <div class="actions">
-                            <button class="btn btn-success btn-small" onclick="marcarPrestacao(${rota.id})" ${rota.prestouContas ? 'disabled' : ''} title="Marcar como pago">
-                                ✅
-                            </button>
-                            <button class="btn btn-danger btn-small" onclick="removerRota(${rota.id})" title="Remover">
-                                🗑️
-                            </button>
+                        <div style="margin-bottom: 10px;">
+                            <select onchange="addFormaPagamento(${index}, this.value); this.value='';">
+                                <option value="">Adicionar forma...</option>
+                                ${formasPagamento.map(fp => `<option value="${fp}">${fp}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div id="formasPag_${index}">
+                            ${(item.formasPagamento || []).map((fp, fpIndex) => 
+                                `<div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                    <span style="margin-right: 10px;">${fp.tipo}: R$ ${fp.valor.toFixed(2)}</span>
+                                    <button class="delete-btn" onclick="removeFormaPagamento(${index}, ${fpIndex})">×</button>
+                                </div>`
+                            ).join('')}
                         </div>
                     </td>
-                `;
-                
-                tabela.appendChild(tr);
-            });
+                    <td>
+                        <input type="number" step="0.01" value="${item.valorTotal || 0}" 
+                               onchange="updateChecklistItem(${index}, 'valorTotal', parseFloat(this.value) || 0)"
+                               style="width: 100px;">
+                    </td>
+                    <td><input type="date" value="${convertDateToInput(item.data)}" onchange="updateChecklistItem(${index}, 'data', new Date(this.value).toLocaleDateString('pt-BR'))"></td>
+                    <td><input type="text" value="${item.observacoes || ''}" onchange="updateChecklistItem(${index}, 'observacoes', this.value)" style="min-width: 150px;"></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="edit-btn" onclick="editChecklistItem(${index})" title="Editar">✏️</button>
+                            <button class="delete-btn" onclick="deleteChecklistItem(${index})" title="Excluir">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            saveChecklist();
         }
 
-        function marcarPrestacao(id) {
-            const rota = rotas.find(r => r.id === id);
-            if (rota && !rota.prestouContas) {
-                rota.prestouContas = true;
-                rota.dataPrestacao = new Date();
-                atualizarTabelaRotas();
-                atualizarDashboard();
-                atualizarCardsDiarios();
-                alert('Prestação de contas marcada como realizada!');
-            }
-        }
-
-        function removerRota(id) {
-            if (confirm('Tem certeza que deseja remover esta rota?')) {
-                rotas = rotas.filter(r => r.id !== id);
-                atualizarTabelaRotas();
-                atualizarDashboard();
-                atualizarCardsDiarios();
-            }
-        }
-
-        // DASHBOARD
-        function atualizarDashboard() {
-            const hoje = new Date().toISOString().split('T')[0];
-            const rotasHoje = rotas.filter(r => r.data === hoje);
+        // Função para adicionar forma de pagamento
+        function addFormaPagamento(checklistIndex, tipo) {
+            if (!tipo) return;
             
-            document.getElementById('totalMotoboysCadastrados').textContent = motoboys.length;
-            document.getElementById('totalPedidosHoje').textContent = rotasHoje.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            document.getElementById('totalValorRotaHoje').textContent = `R$ ${rotasHoje.reduce((sum, r) => sum + r.valorRota, 0).toFixed(2)}`;
-            document.getElementById('totalMotoboyReceber').textContent = `R$ ${rotasHoje.filter(r => !r.prestouContas).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0).toFixed(2)}`;
-            
-            criarGraficos();
-        }
-
-        function criarGraficos() {
-            // Gráfico de Pedidos Diários
-            const ctx1 = document.getElementById('chartPedidosDiarios');
-            if (ctx1.chart) ctx1.chart.destroy();
-            
-            const ultimasSemanas = [];
-            const pedidosPorDia = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const data = new Date();
-                data.setDate(data.getDate() - i);
-                const dataStr = data.toISOString().split('T')[0];
-                ultimasSemanas.push(formatarData(dataStr));
-                
-                const pedidosDia = rotas.filter(r => r.data === dataStr).reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                pedidosPorDia.push(pedidosDia);
-            }
-            
-            ctx1.chart = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: ultimasSemanas,
-                    datasets: [{
-                        label: 'Pedidos',
-                        data: pedidosPorDia,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+            const valor = prompt(`Digite o valor para ${tipo}:`, '0.00');
+            if (valor !== null && !isNaN(parseFloat(valor))) {
+                if (!checklist[checklistIndex].formasPagamento) {
+                    checklist[checklistIndex].formasPagamento = [];
                 }
-            });
+                checklist[checklistIndex].formasPagamento.push({
+                    tipo: tipo,
+                    valor: parseFloat(valor)
+                });
+                saveChecklist();
+                updateChecklist();
+            }
+        }
 
-            // Gráfico de Performance dos Motoboys
-            const ctx2 = document.getElementById('chartPerformance');
-            if (ctx2.chart) ctx2.chart.destroy();
+        // Função para remover forma de pagamento
+        function removeFormaPagamento(checklistIndex, formaIndex) {
+            checklist[checklistIndex].formasPagamento.splice(formaIndex, 1);
+            saveChecklist();
+            updateChecklist();
+        }
+
+        // Função para editar item do checklist
+        function editChecklistItem(index) {
+            const item = checklist[index];
+            const formasText = (item.formasPagamento || []).map(fp => `${fp.tipo}: R$ ${fp.valor.toFixed(2)}`).join(', ');
             
-            if (motoboys.length > 0) {
-                const motoboyNames = motoboys.map(m => m.nome);
-                const pedidosPorMotoboy = motoboys.map(m => 
-                    rotas.filter(r => r.motoboyId === m.id).reduce((sum, r) => sum + r.quantidadePedidos, 0)
-                );
-                
-                ctx2.chart = new Chart(ctx2, {
-                    type: 'bar',
-                    data: {
-                        labels: motoboyNames,
-                        datasets: [{
-                            label: 'Total de Pedidos',
-                            data: pedidosPorMotoboy,
-                            backgroundColor: [
-                                '#3498db',
-                                '#e74c3c',
-                                '#2ecc71',
-                                '#f39c12',
-                                '#9b59b6'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
+            const newData = prompt(`Editando checklist do pedido ${item.pedido}:\n\nObservações atuais: ${item.observacoes || 'Nenhuma'}\nFormas de pagamento: ${formasText || 'Nenhuma'}\n\nDigite as novas observações:`, item.observacoes || '');
+            
+            if (newData !== null) {
+                checklist[index].observacoes = newData;
+                saveChecklist();
+                updateChecklist();
+            }
+        }
+
+        // Função para deletar item do checklist
+        function deleteChecklistItem(index) {
+            if (confirm('Tem certeza que deseja excluir este item do checklist?')) {
+                checklist.splice(index, 1);
+                saveChecklist();
+                updateChecklist();
+            }
+        }
+
+        // Função para atualizar item do checklist
+        function updateChecklistItem(index, field, value) {
+            if (checklist[index]) {
+                checklist[index][field] = value;
+                saveChecklist();
+            }
+        }
+
+        // Funções de filtro de relatório
+        function updateFilterOptions() {
+            const filterMotoboy = document.getElementById('filterMotoboy');
+            if (filterMotoboy) {
+                filterMotoboy.innerHTML = '<option value="">Todos</option>';
+                motoboys.forEach(motoboy => {
+                    filterMotoboy.innerHTML += `<option value="${motoboy}">${motoboy}</option>`;
                 });
             }
+        }
 
-            // Gráfico de Evolução Financeira
-            const ctx3 = document.getElementById('chartEvolucao');
-            if (ctx3.chart) ctx3.chart.destroy();
+        function showReportOptions() {
+            document.getElementById('reportFilters').style.display = 'block';
+            updateFilterOptions();
+        }
+
+        function hideReportOptions() {
+            document.getElementById('reportFilters').style.display = 'none';
+            document.getElementById('cardsSection').style.display = 'none';
+        }
+
+        function toggleDateInputs() {
+            const periodo = document.getElementById('filterPeriodo').value;
+            const dateInputs = document.getElementById('dateInputs');
             
-            const valorRotaPorDia = [];
-            const valorReceberPorDia = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const data = new Date();
-                data.setDate(data.getDate() - i);
-                const dataStr = data.toISOString().split('T')[0];
-                
-                const rotasDia = rotas.filter(r => r.data === dataStr);
-                valorRotaPorDia.push(rotasDia.reduce((sum, r) => sum + r.valorRota, 0));
-                valorReceberPorDia.push(rotasDia.reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0));
+            if (periodo === 'intervalo') {
+                dateInputs.style.display = 'grid';
+            } else {
+                dateInputs.style.display = 'none';
             }
-            
-            ctx3.chart = new Chart(ctx3, {
-                type: 'line',
-                data: {
-                    labels: ultimasSemanas,
-                    datasets: [{
-                        label: 'Valor das Rotas',
-                        data: valorRotaPorDia,
-                        borderColor: '#27ae60',
-                        backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                        tension: 0.4
-                    }, {
-                        label: 'Valor Final a Receber',
-                        data: valorReceberPorDia,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
         }
 
-        // CARDS DIÁRIOS
-        function atualizarCardsDiarios() {
-            const dataFiltro = document.getElementById('filtroData').value;
-            const container = document.getElementById('cardsDiarios');
-            container.innerHTML = '';
-
-            const rotasDoDia = rotas.filter(r => r.data === dataFiltro);
-            const motoboysDoDia = [...new Set(rotasDoDia.map(r => r.motoboyId))];
-
-            if (motoboysDoDia.length === 0) {
-                container.innerHTML = '<div class="empty-state">Nenhuma rota encontrada para esta data.</div>';
-                return;
-            }
-
-            motoboysDoDia.forEach(motoboyId => {
-                const motoboy = motoboys.find(m => m.id === motoboyId);
-                if (!motoboy) return;
-                
-                const rotasMotoboy = rotasDoDia.filter(r => r.motoboyId === motoboyId);
-                
-                const totalPedidos = rotasMotoboy.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                const totalDinheiroRecebido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
-                const totalValorRota = rotasMotoboy.reduce((sum, r) => sum + r.valorRota, 0);
-                const totalTrocos = rotasMotoboy.reduce((sum, r) => sum + r.trocos, 0);
-                const totalDescontos = rotasMotoboy.reduce((sum, r) => sum + r.descontos, 0);
-                const totalRetido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRetido, 0);
-                const totalValorFinalReceber = rotasMotoboy.reduce((sum, r) => sum + r.valorFinalReceber, 0);
-                
-                const status = totalValorFinalReceber > 0 ? 'credito' : totalValorFinalReceber < 0 ? 'devendo' : 'ok';
-                const statusText = totalValorFinalReceber > 0 ? 'VALOR A RECEBER' : totalValorFinalReceber < 0 ? 'EMPRESA DEVE' : 'EM DIA';
-
-                // Texto para WhatsApp
-                const whatsappText = `🏍️ *PRESTAÇÃO DE CONTAS DIÁRIA*
-📅 Data: ${formatarData(dataFiltro)}
-👤 Motoboy: *${motoboy.nome}*
-
-📊 *RESUMO DO DIA:*
-🛍️ Pedidos Entregues: ${totalPedidos}
-💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
-💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
-
-💸 *DESCONTOS:*
-🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
-💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
-
-${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
-  totalValorFinalReceber < 0 ? `🔴 *EMPRESA DEVE: R$ ${Math.abs(totalValorFinalReceber).toFixed(2)}*` : 
-  `✅ *CONTAS ZERADAS*`}
-
-_Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_`;
-
-                const card = document.createElement('div');
-                card.className = 'motoboy-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="motoboy-name">👤 ${motoboy.nome}</div>
-                        <div class="status-badge ${status}">${statusText}</div>
-                    </div>
-                    
-                    <div class="financial-summary">
-                        <div class="financial-row">
-                            <span>📊 Pedidos Entregues:</span>
-                            <span><strong>${totalPedidos}</strong></span>
-                        </div>
-                        <div class="financial-row">
-                            <span>💵 Dinheiro Recebido:</span>
-                            <span>R$ ${totalDinheiroRecebido.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row">
-                            <span>💰 Valor da Rota:</span>
-                            <span>R$ ${totalValorRota.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row">
-                            <span>🔄 (-) Trocos:</span>
-                            <span>R$ ${totalTrocos.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row">
-                            <span>💳 (-) Descontos:</span>
-                            <span>R$ ${totalDescontos.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row">
-                            <span>🏪 (-) Dinheiro Retido:</span>
-                            <span>R$ ${totalRetido.toFixed(2)}</span>
-                        </div>
-                        <div class="financial-row total">
-                            <span>${totalValorFinalReceber > 0 ? 'VALOR FINAL A RECEBER:' : totalValorFinalReceber < 0 ? 'EMPRESA DEVE:' : 'SITUAÇÃO:'}</span>
-                            <span style="color: ${totalValorFinalReceber > 0 ? '#27ae60' : totalValorFinalReceber < 0 ? '#e74c3c' : '#3498db'}">
-                                ${totalValorFinalReceber > 0 ? 'R$ ' + totalValorFinalReceber.toFixed(2) : 
-                                  totalValorFinalReceber < 0 ? 'R$ ' + Math.abs(totalValorFinalReceber).toFixed(2) : 
-                                  'ZERADA'}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="whatsapp-card">${whatsappText}</div>
-
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button class="btn btn-success" onclick="copiarCard(${motoboyId}, '${dataFiltro}')" style="flex: 1;">
-                            📋 Copiar Card
-                        </button>
-                        <button class="btn btn-warning" onclick="enviarWhatsApp('${motoboy.telefone}', ${motoboyId}, '${dataFiltro}')" style="flex: 1;">
-                            📱 WhatsApp
-                        </button>
-                    </div>
-                `;
-
-                container.appendChild(card);
-            });
-        }
-
-        function copiarCard(motoboyId, data) {
-            const motoboy = motoboys.find(m => m.id === motoboyId);
-            const rotasDoDia = rotas.filter(r => r.data === data && r.motoboyId === motoboyId);
-            
-            const totalPedidos = rotasDoDia.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            const totalDinheiroRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
-            const totalValorRota = rotasDoDia.reduce((sum, r) => sum + r.valorRota, 0);
-            const totalTrocos = rotasDoDia.reduce((sum, r) => sum + r.trocos, 0);
-            const totalDescontos = rotasDoDia.reduce((sum, r) => sum + r.descontos, 0);
-            const totalRetido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRetido, 0);
-            const totalValorFinalReceber = rotasDoDia.reduce((sum, r) => sum + r.valorFinalReceber, 0);
-
-            const texto = `🏍️ *PRESTAÇÃO DE CONTAS DIÁRIA*
-📅 Data: ${formatarData(data)}
-👤 Motoboy: *${motoboy.nome}*
-
-📊 *RESUMO DO DIA:*
-🛍️ Pedidos Entregues: ${totalPedidos}
-💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
-💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
-
-💸 *DESCONTOS:*
-🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
-💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
-
-${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
-  totalValorFinalReceber < 0 ? `🔴 *EMPRESA DEVE: R$ ${Math.abs(totalValorFinalReceber).toFixed(2)}*` : 
-  `✅ *CONTAS ZERADAS*`}
-
-_Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_`;
-
-            navigator.clipboard.writeText(texto).then(() => {
-                alert(`Card de ${motoboy.nome} copiado para a área de transferência!`);
-            }).catch(() => {
-                // Fallback para browsers que não suportam clipboard API
-                const textArea = document.createElement('textarea');
-                textArea.value = texto;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                alert(`Card de ${motoboy.nome} copiado para a área de transferência!`);
-            });
-        }
-
-        function enviarWhatsApp(telefone, motoboyId, data) {
-            const motoboy = motoboys.find(m => m.id === motoboyId);
-            const rotasDoDia = rotas.filter(r => r.data === data && r.motoboyId === motoboyId);
-            
-            const totalPedidos = rotasDoDia.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-            const totalDinheiroRecebido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRecebido, 0);
-            const totalValorRota = rotasDoDia.reduce((sum, r) => sum + r.valorRota, 0);
-            const totalTrocos = rotasDoDia.reduce((sum, r) => sum + r.trocos, 0);
-            const totalDescontos = rotasDoDia.reduce((sum, r) => sum + r.descontos, 0);
-            const totalRetido = rotasDoDia.reduce((sum, r) => sum + r.dinheiroRetido, 0);
-            const totalValorFinalReceber = rotasDoDia.reduce((sum, r) => sum + r.valorFinalReceber, 0);
-
-            const texto = `🏍️ *PRESTAÇÃO DE CONTAS DIÁRIA*
-📅 Data: ${formatarData(data)}
-👤 Motoboy: *${motoboy.nome}*
-
-📊 *RESUMO DO DIA:*
-🛍️ Pedidos Entregues: ${totalPedidos}
-💵 Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
-💰 Valor da Rota: R$ ${totalValorRota.toFixed(2)}
-
-💸 *DESCONTOS:*
-🔄 Trocos: R$ ${totalTrocos.toFixed(2)}
-💳 Descontos: R$ ${totalDescontos.toFixed(2)}
-🏪 Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
-
-${totalValorFinalReceber > 0 ? `💵 *VALOR FINAL QUE MOTOBOY DEVE RECEBER: R$ ${totalValorFinalReceber.toFixed(2)}*` : 
-  totalValorFinalReceber < 0 ? `🔴 *EMPRESA DEVE: R$ ${Math.abs(totalValorFinalReceber).toFixed(2)}*` : 
-  `✅ *CONTAS ZERADAS*`}
-
-_Calçados 24h - Sistema de Gestão - ${new Date().toLocaleDateString('pt-BR')}_`;
-
-            const numeroLimpo = telefone.replace(/\D/g, '');
-            const url = `https://wa.me/55${numeroLimpo}?text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
-        }
-
-        function copiarTodosCards() {
-            const dataFiltro = document.getElementById('filtroData').value;
-            const rotasDoDia = rotas.filter(r => r.data === dataFiltro);
-            const motoboysDoDia = [...new Set(rotasDoDia.map(r => r.motoboyId))];
-            
-            if (motoboysDoDia.length === 0) {
-                alert('Nenhuma rota encontrada para esta data.');
-                return;
-            }
-            
-            let textoCompleto = `📋 *PRESTAÇÃO DE CONTAS DIÁRIA - ${formatarData(dataFiltro)}*
-_Calçados 24h_
-
-`;
-            
-            motoboysDoDia.forEach(motoboyId => {
-                const motoboy = motoboys.find(m => m.id === motoboyId);
-                const rotasMotoboy = rotasDoDia.filter(r => r.motoboyId === motoboyId);
-                
-                const totalPedidos = rotasMotoboy.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                const totalValorFinalReceber = rotasMotoboy.reduce((sum, r) => sum + r.valorFinalReceber, 0);
-                
-                textoCompleto += `👤 *${motoboy.nome}*
-🛍️ Pedidos: ${totalPedidos}
-💵 ${totalValorFinalReceber > 0 ? 'Valor Final a Receber' : totalValorFinalReceber < 0 ? 'Empresa Deve' : 'Zerado'}: R$ ${Math.abs(totalValorFinalReceber).toFixed(2)}
-
-`;
-            });
-            
-            navigator.clipboard.writeText(textoCompleto).then(() => {
-                alert('Resumo de todos os cards copiado!');
-            }).catch(() => {
-                const textArea = document.createElement('textarea');
-                textArea.value = textoCompleto;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                alert('Resumo de todos os cards copiado!');
-            });
-        }
-
-        function enviarTodosWhatsApp() {
-            alert('Esta funcionalidade enviaria os cards para todos os motoboys via WhatsApp. Implementação específica conforme necessidade.');
-        }
-
-        // RELATÓRIOS
-        function gerarRelatorio() {
-            const tipo = document.getElementById('tipoRelatorio').value;
-            const data = document.getElementById('dataRelatorio').value;
-            
-            let rotasFiltradas = [];
-            let titulo = '';
-            
-            if (tipo === 'diario') {
-                rotasFiltradas = rotas.filter(r => r.data === data);
-                titulo = `RELATÓRIO DIÁRIO - ${formatarData(data)}`;
-            } else if (tipo === 'semanal') {
-                const dataObj = new Date(data);
-                const inicioSemana = new Date(dataObj);
-                inicioSemana.setDate(dataObj.getDate() - dataObj.getDay());
-                const fimSemana = new Date(inicioSemana);
-                fimSemana.setDate(inicioSemana.getDate() + 6);
-                
-                rotasFiltradas = rotas.filter(r => {
-                    const rotaData = new Date(r.data);
-                    return rotaData >= inicioSemana && rotaData <= fimSemana;
-                });
-                titulo = `RELATÓRIO SEMANAL - ${formatarData(inicioSemana.toISOString().split('T')[0])} a ${formatarData(fimSemana.toISOString().split('T')[0])}`;
-            } else if (tipo === 'mensal') {
-                const dataObj = new Date(data);
-                const ano = dataObj.getFullYear();
-                const mes = dataObj.getMonth();
-                
-                rotasFiltradas = rotas.filter(r => {
-                    const rotaData = new Date(r.data);
-                    return rotaData.getFullYear() === ano && rotaData.getMonth() === mes;
-                });
-                titulo = `RELATÓRIO MENSAL - ${mes + 1}/${ano}`;
-            }
-            
-            gerarRelatorioTexto(rotasFiltradas, titulo);
-            criarGraficosRelatorio(rotasFiltradas);
-        }
-
-        function gerarRelatorioTexto(rotasFiltradas, titulo) {
-            let relatorio = `${titulo}
-Calçados 24h - Sistema de Gestão
-Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
-
-`;
-            
-            const motoboyIds = [...new Set(rotasFiltradas.map(r => r.motoboyId))];
-            
-            relatorio += `📊 RESUMO GERAL:
-Total de Motoboys: ${motoboyIds.length}
-Total de Rotas: ${rotasFiltradas.length}
-Total de Pedidos: ${rotasFiltradas.reduce((sum, r) => sum + r.quantidadePedidos, 0)}
-Total Dinheiro Recebido: R$ ${rotasFiltradas.reduce((sum, r) => sum + (r.dinheiroRecebido || 0), 0).toFixed(2)}
-Total Valor das Rotas: R$ ${rotasFiltradas.reduce((sum, r) => sum + r.valorRota, 0).toFixed(2)}
-Total Valor Final a Receber: R$ ${rotasFiltradas.filter(r => !r.prestouContas).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0).toFixed(2)}
-
-👥 DETALHAMENTO POR MOTOBOY:
-
-`;
-            
-            motoboyIds.forEach(motoboyId => {
-                const motoboy = motoboys.find(m => m.id === motoboyId);
-                if (!motoboy) return;
-                
-                const rotasMotoboy = rotasFiltradas.filter(r => r.motoboyId === motoboyId);
-                
-                const totalPedidos = rotasMotoboy.reduce((sum, r) => sum + r.quantidadePedidos, 0);
-                const totalDinheiroRecebido = rotasMotoboy.reduce((sum, r) => sum + (r.dinheiroRecebido || 0), 0);
-                const totalValorRota = rotasMotoboy.reduce((sum, r) => sum + r.valorRota, 0);
-                const totalTrocos = rotasMotoboy.reduce((sum, r) => sum + r.trocos, 0);
-                const totalDescontos = rotasMotoboy.reduce((sum, r) => sum + r.descontos, 0);
-                const totalRetido = rotasMotoboy.reduce((sum, r) => sum + r.dinheiroRetido, 0);
-                const totalValorFinalReceber = rotasMotoboy.reduce((sum, r) => sum + r.valorFinalReceber, 0);
-                const rotasPendentes = rotasMotoboy.filter(r => !r.prestouContas && r.valorFinalReceber > 0).length;
-                
-                relatorio += `🏍️ ${motoboy.nome}:
-  - Rotas Realizadas: ${rotasMotoboy.length}
-  - Pedidos Entregues: ${totalPedidos}
-  - Dinheiro Recebido: R$ ${totalDinheiroRecebido.toFixed(2)}
-  - Valor das Rotas: R$ ${totalValorRota.toFixed(2)}
-  - Trocos: R$ ${totalTrocos.toFixed(2)}
-  - Descontos: R$ ${totalDescontos.toFixed(2)}
-  - Dinheiro Retido: R$ ${totalRetido.toFixed(2)}
-  - Valor Final a Receber: R$ ${totalValorFinalReceber.toFixed(2)}
-  - Rotas Pendentes: ${rotasPendentes}
-
-`;
-            });
-            
-            document.getElementById('conteudoRelatorio').textContent = relatorio;
-            document.getElementById('relatorioTexto').style.display = 'block';
-        }
-
-        function criarGraficosRelatorio(rotasFiltradas) {
-            // Gráfico Financeiro por Motoboy
-            const ctx1 = document.getElementById('chartRelatorioFinanceiro');
-            if (ctx1.chart) ctx1.chart.destroy();
-            
-            const motoboyIds = [...new Set(rotasFiltradas.map(r => r.motoboyId))];
-            const nomes = motoboyIds.map(id => {
-                const motoboy = motoboys.find(m => m.id === id);
-                return motoboy ? motoboy.nome : 'Desconhecido';
-            });
-            const valorRota = motoboyIds.map(id => 
-                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.valorRota, 0)
-            );
-            const valorFinalReceber = motoboyIds.map(id => 
-                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + Math.max(0, r.valorFinalReceber), 0)
-            );
-            
-            ctx1.chart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: nomes,
-                    datasets: [{
-                        label: 'Valor das Rotas',
-                        data: valorRota,
-                        backgroundColor: '#27ae60'
-                    }, {
-                        label: 'Valor Final a Receber',
-                        data: valorFinalReceber,
-                        backgroundColor: '#3498db'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Produtividade
-            const ctx2 = document.getElementById('chartProdutividade');
-            if (ctx2.chart) ctx2.chart.destroy();
-            
-            const pedidos = motoboyIds.map(id => 
-                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.quantidadePedidos, 0)
-            );
-            const valorRotaScatter = motoboyIds.map(id => 
-                rotasFiltradas.filter(r => r.motoboyId === id).reduce((sum, r) => sum + r.valorRota, 0)
-            );
-            
-            ctx2.chart = new Chart(ctx2, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Motoboys',
-                        data: pedidos.map((p, i) => ({
-                            x: p,
-                            y: valorRotaScatter[i]
-                        })),
-                        backgroundColor: '#3498db',
-                        borderColor: '#2980b9'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Quantidade de Pedidos'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Valor da Rota (R$)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function baixarRelatorio() {
-            const conteudo = document.getElementById('conteudoRelatorio').textContent;
-            if (!conteudo) {
-                alert('Gere um relatório primeiro!');
-                return;
-            }
-            
-            const blob = new Blob([conteudo], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `relatorio_motoboys_calcados24h_${new Date().getTime()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            alert('Relatório baixado com sucesso!');
-        }
-
-        // UTILITÁRIOS
-        function formatarData(data) {
-            return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
-        }
-
-        // DADOS DE EXEMPLO
-        function carregarDadosExemplo() {
-            // Motoboys de exemplo
-            const motoboyExample = [
-                {
-                    id: contadorMotoboy++,
-                    nome: 'João Silva',
-                    telefone: '(11) 99999-1111',
-                    cnh: '12345678901',
-                    veiculo: 'Honda CG 160 Start',
-                    placa: 'ABC-1234',
-                    dataAdmissao: '2024-01-15',
-                    status: 'ativo',
-                    dataCadastro: new Date('2024-01-15')
-                },
-                {
-                    id: contadorMotoboy++,
-                    nome: 'Carlos Santos',
-                    telefone: '(11) 99999-2222',
-                    cnh: '23456789012',
-                    veiculo: 'Yamaha Factor 125',
-                    placa: 'DEF-5678',
-                    dataAdmissao: '2024-02-01',
-                    status: 'ativo',
-                    dataCadastro: new Date('2024-02-01')
-                },
-                {
-                    id: contadorMotoboy++,
-                    nome: 'Pedro Oliveira',
-                    telefone: '(11) 99999-3333',
-                    cnh: '34567890123',
-                    veiculo: 'Honda Bros 160',
-                    placa: 'GHI-9012',
-                    dataAdmissao: '2024-03-10',
-                    status: 'ativo',
-                    dataCadastro: new Date('2024-03-10')
-                }
-            ];
-
-            motoboys = motoboyExample;
-
-            // Rotas de exemplo
+        function getDateRange(periodo) {
             const hoje = new Date();
             const ontem = new Date(hoje);
-            ontem.setDate(ontem.getDate() - 1);
-            const anteontem = new Date(hoje);
-            anteontem.setDate(anteontem.getDate() - 2);
-
-            const rotasExample = [
-                {
-                    id: contadorRota++,
-                    motoboyId: 1,
-                    motoboyNome: 'João Silva',
-                    data: hoje.toISOString().split('T')[0],
-                    quantidadePedidos: 12,
-                    dinheiroRecebido: 300.00,
-                    valorRota: 240.00,
-                    trocos: 15.00,
-                    descontos: 8.50,
-                    dinheiroRetido: 0.00,
-                    valorFinalReceber: 216.50,
-                    observacoes: 'Rota centro da cidade',
-                    prestouContas: false,
-                    dataCriacao: hoje
-                },
-                {
-                    id: contadorRota++,
-                    motoboyId: 2,
-                    motoboyNome: 'Carlos Santos',
-                    data: hoje.toISOString().split('T')[0],
-                    quantidadePedidos: 8,
-                    dinheiroRecebido: 200.00,
-                    valorRota: 160.00,
-                    trocos: 10.00,
-                    descontos: 5.00,
-                    dinheiroRetido: 15.00,
-                    valorFinalReceber: 130.00,
-                    observacoes: 'Rota bairro norte',
-                    prestouContas: false,
-                    dataCriacao: hoje
-                },
-                {
-                    id: contadorRota++,
-                    motoboyId: 1,
-                    motoboyNome: 'João Silva',
-                    data: ontem.toISOString().split('T')[0],
-                    quantidadePedidos: 15,
-                    dinheiroRecebido: 380.00,
-                    valorRota: 300.00,
-                    trocos: 20.00,
-                    descontos: 12.00,
-                    dinheiroRetido: 0.00,
-                    valorFinalReceber: 268.00,
-                    observacoes: 'Dia de muito movimento',
-                    prestouContas: true,
-                    dataCriacao: ontem
-                },
-                {
-                    id: contadorRota++,
-                    motoboyId: 3,
-                    motoboyNome: 'Pedro Oliveira',
-                    data: anteontem.toISOString().split('T')[0],
-                    quantidadePedidos: 10,
-                    dinheiroRecebido: 250.00,
-                    valorRota: 200.00,
-                    trocos: 12.50,
-                    descontos: 7.50,
-                    dinheiroRetido: 25.00,
-                    valorFinalReceber: 155.00,
-                    observacoes: 'Rota zona sul',
-                    prestouContas: false,
-                    dataCriacao: anteontem
-                }
-            ];
-
-            rotas = rotasExample;
-
-            // Atualizar todas as interfaces
-            atualizarTabelaMotoboys();
-            atualizarSelectMotoboys();
-            atualizarTabelaRotas();
-            atualizarDashboard();
-            atualizarCardsDiarios();
+            ontem.setDate(hoje.getDate() - 1);
+            
+            switch (periodo) {
+                case 'hoje':
+                    return {
+                        inicio: hoje.toLocaleDateString('pt-BR'),
+                        fim: hoje.toLocaleDateString('pt-BR')
+                    };
+                case 'ontem':
+                    return {
+                        inicio: ontem.toLocaleDateString('pt-BR'),
+                        fim: ontem.toLocaleDateString('pt-BR')
+                    };
+                case 'semana':
+                    const inicioSemana = new Date(hoje);
+                    inicioSemana.setDate(hoje.getDate() - hoje.getDay());
+                    return {
+                        inicio: inicioSemana.toLocaleDateString('pt-BR'),
+                        fim: hoje.toLocaleDateString('pt-BR')
+                    };
+                case 'mes':
+                    const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+                    return {
+                        inicio: inicioMes.toLocaleDateString('pt-BR'),
+                        fim: hoje.toLocaleDateString('pt-BR')
+                    };
+                case 'intervalo':
+                    const dataInicial = document.getElementById('dataInicial').value;
+                    const dataFinal = document.getElementById('dataFinal').value;
+                    return {
+                        inicio: dataInicial ? new Date(dataInicial).toLocaleDateString('pt-BR') : '',
+                        fim: dataFinal ? new Date(dataFinal).toLocaleDateString('pt-BR') : ''
+                    };
+                default:
+                    return { inicio: '', fim: '' };
+            }
         }
+
+        function filterData() {
+            const motoboyFiltro = document.getElementById('filterMotoboy').value;
+            const periodo = document.getElementById('filterPeriodo').value;
+            const { inicio, fim } = getDateRange(periodo);
+            
+            return data.filter(row => {
+                // Filtro por motoboy
+                if (motoboyFiltro && row.motoboy !== motoboyFiltro) {
+                    return false;
+                }
+                
+                // Filtro por data
+                if (inicio && fim) {
+                    const dataRow = row.data;
+                    if (!dataRow) return false;
+                    
+                    const [diaRow, mesRow, anoRow] = dataRow.split('/');
+                    const [diaInicio, mesInicio, anoInicio] = inicio.split('/');
+                    const [diaFim, mesFim, anoFim] = fim.split('/');
+                    
+                    const dataRowDate = new Date(anoRow, mesRow - 1, diaRow);
+                    const dataInicioDate = new Date(anoInicio, mesInicio - 1, diaInicio);
+                    const dataFimDate = new Date(anoFim, mesFim - 1, diaFim);
+                    
+                    return dataRowDate >= dataInicioDate && dataRowDate <= dataFimDate;
+                }
+                
+                return true;
+            });
+        }
+
+        function generateFilteredReport() {
+            const filteredData = filterData();
+            
+            if (filteredData.length === 0) {
+                alert('Nenhum dado encontrado para os filtros selecionados.');
+                return;
+            }
+            
+            const motoboyTotals = {};
+            
+            filteredData.forEach(row => {
+                if (row.motoboy) {
+                    if (!motoboyTotals[row.motoboy]) {
+                        motoboyTotals[row.motoboy] = {
+                            rotas: {},
+                            total: 0,
+                            pedidos: []
+                        };
+                    }
+                    if (row.rota) {
+                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
+                            motoboyTotals[row.motoboy].rotas[row.rota] = 0;
+                        }
+                        const resultado = calculateResult(row);
+                        motoboyTotals[row.motoboy].rotas[row.rota] += resultado;
+                        motoboyTotals[row.motoboy].total += resultado;
+                        motoboyTotals[row.motoboy].pedidos.push(row);
+                    }
+                }
+            });
+
+            const totalGeral = filteredData.reduce((sum, row) => sum + calculateResult(row), 0);
+            const periodo = document.getElementById('filterPeriodo').value;
+            const { inicio, fim } = getDateRange(periodo);
+
+            let report = `🚚 RELATÓRIO CALÇADOS 24H\n`;
+            report += `📅 Período: ${inicio === fim ? inicio : `${inicio} a ${fim}`}\n`;
+            report += `🏍️ Motoboy: ${document.getElementById('filterMotoboy').value || 'Todos'}\n\n`;
+
+            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
+                report += `👤 ${motoboy.toUpperCase()}\n`;
+                Object.entries(dados.rotas).forEach(([rota, valor]) => {
+                    report += `   Rota ${rota}: R$ ${valor.toFixed(2)}\n`;
+                });
+                report += `   TOTAL: R$ ${dados.total.toFixed(2)}\n`;
+                report += `   Pedidos: ${dados.pedidos.length}\n\n`;
+            });
+
+            report += `💰 TOTAL GERAL: R$ ${totalGeral.toFixed(2)}\n`;
+            report += `📊 Total de pedidos: ${filteredData.length}`;
+
+            document.getElementById('reportContent').textContent = report;
+            document.getElementById('reportModal').style.display = 'block';
+        }
+
+        function generateCards() {
+            const filteredData = filterData();
+            
+            if (filteredData.length === 0) {
+                alert('Nenhum dado encontrado para os filtros selecionados.');
+                return;
+            }
+
+            const motoboyTotals = {};
+            
+            filteredData.forEach(row => {
+                if (row.motoboy) {
+                    if (!motoboyTotals[row.motoboy]) {
+                        motoboyTotals[row.motoboy] = {
+                            rotas: {},
+                            total: 0,
+                            pedidos: [],
+                            dinheiroRecebido: 0,
+                            valorRota: 0,
+                            desconto: 0,
+                            troco: 0,
+                            dinheiroRetido: 0
+                        };
+                    }
+                    
+                    const resultado = calculateResult(row);
+                    motoboyTotals[row.motoboy].total += resultado;
+                    motoboyTotals[row.motoboy].pedidos.push(row);
+                    motoboyTotals[row.motoboy].dinheiroRecebido += parseFloat(row.dinheiroRecebido) || 0;
+                    motoboyTotals[row.motoboy].valorRota += parseFloat(row.valorRota) || 0;
+                    motoboyTotals[row.motoboy].desconto += parseFloat(row.desconto) || 0;
+                    motoboyTotals[row.motoboy].troco += parseFloat(row.troco) || 0;
+                    motoboyTotals[row.motoboy].dinheiroRetido += parseFloat(row.dinheiroRetido) || 0;
+                    
+                    if (row.rota) {
+                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
+                            motoboyTotals[row.motoboy].rotas[row.rota] = {
+                                valor: 0,
+                                pedidos: []
+                            };
+                        }
+                        motoboyTotals[row.motoboy].rotas[row.rota].valor += resultado;
+                        motoboyTotals[row.motoboy].rotas[row.rota].pedidos.push(row);
+                    }
+                }
+            });
+
+            const periodo = document.getElementById('filterPeriodo').value;
+            const { inicio, fim } = getDateRange(periodo);
+            
+            let cardsHtml = '';
+            
+            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
+                cardsHtml += `
+                    <div class="prestacao-card">
+                        <h4>
+                            🏍️ ${motoboy}
+                            <span style="font-size: 12px; color: #7f8c8d;">
+                                ${inicio === fim ? inicio : `${inicio} a ${fim}`}
+                            </span>
+                        </h4>
+                        <div class="prestacao-details">
+                `;
+                
+                // Detalhes por rota
+                Object.entries(dados.rotas).forEach(([rota, rotaData]) => {
+                    cardsHtml += `
+                        <div class="rota-group">
+                            <div class="rota-title">📍 Rota ${rota} (${rotaData.pedidos.length} pedidos)</div>
+                    `;
+                    
+                    rotaData.pedidos.forEach(pedido => {
+                        cardsHtml += `
+                            <div class="item">
+                                <span>Pedido ${pedido.pedido}:</span>
+                                <span>R$ ${calculateResult(pedido).toFixed(2)}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    cardsHtml += `
+                            <div class="item total">
+                                <span>Subtotal Rota ${rota}:</span>
+                                <span>R$ ${rotaData.valor.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Resumo geral do motoboy
+                cardsHtml += `
+                    <div class="item">
+                        <span>💰 Dinheiro Recebido:</span>
+                        <span>R$ ${dados.dinheiroRecebido.toFixed(2)}</span>
+                    </div>
+                    <div class="item">
+                        <span>🎯 Valor das Rotas:</span>
+                        <span>R$ ${dados.valorRota.toFixed(2)}</span>
+                    </div>
+                    <div class="item">
+                        <span>🏷️ Descontos:</span>
+                        <span>R$ ${dados.desconto.toFixed(2)}</span>
+                    </div>
+                    <div class="item">
+                        <span>💸 Trocos:</span>
+                        <span>R$ ${dados.troco.toFixed(2)}</span>
+                    </div>
+                    <div class="item">
+                        <span>🏦 Dinheiro Retido:</span>
+                        <span>R$ ${dados.dinheiroRetido.toFixed(2)}</span>
+                    </div>
+                    <div class="item total">
+                        <span>📊 TOTAL FINAL:</span>
+                        <span>R$ ${dados.total.toFixed(2)}</span>
+                    </div>
+                    <div class="item">
+                        <span>📋 Total de Pedidos:</span>
+                        <span>${dados.pedidos.length}</span>
+                    </div>
+                </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('cardsContainer').innerHTML = cardsHtml;
+            document.getElementById('cardsSection').style.display = 'block';
+        }
+
+        // Função para gerar cards individuais para WhatsApp
+        function generateWhatsAppCards() {
+            const filteredData = filterData();
+            
+            if (filteredData.length === 0) {
+                alert('Nenhum dado encontrado para os filtros selecionados.');
+                return;
+            }
+
+            const motoboyTotals = {};
+            
+            filteredData.forEach(row => {
+                if (row.motoboy) {
+                    if (!motoboyTotals[row.motoboy]) {
+                        motoboyTotals[row.motoboy] = {
+                            rotas: {},
+                            total: 0,
+                            pedidos: [],
+                            dinheiroRecebido: 0,
+                            valorRota: 0,
+                            desconto: 0,
+                            troco: 0,
+                            dinheiroRetido: 0
+                        };
+                    }
+                    
+                    const resultado = calculateResult(row);
+                    motoboyTotals[row.motoboy].total += resultado;
+                    motoboyTotals[row.motoboy].pedidos.push(row);
+                    motoboyTotals[row.motoboy].dinheiroRecebido += parseFloat(row.dinheiroRecebido) || 0;
+                    motoboyTotals[row.motoboy].valorRota += parseFloat(row.valorRota) || 0;
+                    motoboyTotals[row.motoboy].desconto += parseFloat(row.desconto) || 0;
+                    motoboyTotals[row.motoboy].troco += parseFloat(row.troco) || 0;
+                    motoboyTotals[row.motoboy].dinheiroRetido += parseFloat(row.dinheiroRetido) || 0;
+                    
+                    if (row.rota) {
+                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
+                            motoboyTotals[row.motoboy].rotas[row.rota] = {
+                                valor: 0,
+                                pedidos: []
+                            };
+                        }
+                        motoboyTotals[row.motoboy].rotas[row.rota].valor += resultado;
+                        motoboyTotals[row.motoboy].rotas[row.rota].pedidos.push(row);
+                    }
+                }
+            });
+
+            const periodo = document.getElementById('filterPeriodo').value;
+            const { inicio, fim } = getDateRange(periodo);
+            
+            // Gerar mensagens individuais para cada motoboy
+            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
+                let message = `🚚 *CALÇADOS 24H*\n`;
+                message += `📅 ${inicio === fim ? inicio : `${inicio} a ${fim}`}\n`;
+                message += `🏍️ *${motoboy.toUpperCase()}*\n\n`;
+
+                // Detalhes por rota
+                Object.entries(dados.rotas).forEach(([rota, rotaData]) => {
+                    message += `📍 *Rota ${rota}* (${rotaData.pedidos.length} pedidos)\n`;
+                    
+                    rotaData.pedidos.forEach(pedido => {
+                        message += `   • Pedido ${pedido.pedido}: R$ ${calculateResult(pedido).toFixed(2)}\n`;
+                    });
+                    
+                    message += `   💰 Subtotal: R$ ${rotaData.valor.toFixed(2)}\n\n`;
+                });
+                
+                // Resumo
+                message += `📊 *RESUMO FINANCEIRO*\n`;
+                message += `💰 Dinheiro Recebido: R$ ${dados.dinheiroRecebido.toFixed(2)}\n`;
+                message += `🎯 Valor das Rotas: R$ ${dados.valorRota.toFixed(2)}\n`;
+                message += `🏷️ Descontos: R$ ${dados.desconto.toFixed(2)}\n`;
+                message += `💸 Trocos: R$ ${dados.troco.toFixed(2)}\n`;
+                message += `🏦 Dinheiro Retido: R$ ${dados.dinheiroRetido.toFixed(2)}\n\n`;
+                message += `🔥 *TOTAL FINAL: R$ ${dados.total.toFixed(2)}*\n`;
+                message += `📋 Total de Pedidos: ${dados.pedidos.length}`;
+
+                // Copiar para clipboard automaticamente e mostrar modal
+                navigator.clipboard.writeText(message).then(() => {
+                    document.getElementById('reportContent').textContent = message;
+                    document.getElementById('reportModal').style.display = 'block';
+                    alert(`Relatório do ${motoboy} copiado para área de transferência!`);
+                });
+            });
+        }
+
+        function copyReport() {
+            const reportContent = document.getElementById('reportContent').textContent;
+            navigator.clipboard.writeText(reportContent).then(() => {
+                alert('Relatório copiado para a área de transferência!');
+            });
+        }
+
+        // Função para fechar modal
+        function closeModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        // Função para exportar para Excel
+        function exportToExcel() {
+            const headers = ['Data', 'Motoboy', 'Rota', 'Status', 'Nº Pedido', 'Dinheiro Recebido', 'Valor da Rota', 'Desconto', 'Troco', 'Dinheiro Retido', 'Resultado'];
+            
+            let csvContent = headers.join(',') + '\n';
+            
+            data.forEach(row => {
+                const line = [
+                    row.data || '',
+                    row.motoboy || '',
+                    row.rota || '',
+                    row.status || '',
+                    row.pedido || '',
+                    row.dinheiroRecebido || 0,
+                    row.valorRota || 0,
+                    row.desconto || 0,
+                    row.troco || 0,
+                    row.dinheiroRetido || 0,
+                    calculateResult(row).toFixed(2)
+                ];
+                csvContent += line.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `calcados24h_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Função para limpar dados
+        function clearData() {
+            if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+                data = [];
+                checklist = [];
+                saveData();
+                saveChecklist();
+                loadData();
+                updateChecklist();
+            }
+        }
+
+        // Funções de salvamento (usando variáveis JavaScript em vez de localStorage)
+        function saveData() {
+            window.calcados24h_data = data;
+        }
+
+        function saveMotoboys() {
+            window.calcados24h_motoboys = motoboys;
+        }
+
+        function saveChecklist() {
+            window.calcados24h_checklist = checklist;
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('reportModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(event) {
+            // Ctrl + N para nova linha
+            if (event.ctrlKey && event.key === 'n') {
+                event.preventDefault();
+                addRow();
+            }
+            
+            // Ctrl + R para gerar relatório
+            if (event.ctrlKey && event.key === 'r') {
+                event.preventDefault();
+                showReportOptions();
+            }
+            
+            // Ctrl + E para exportar
+            if (event.ctrlKey && event.key === 'e') {
+                event.preventDefault();
+                exportToExcel();
+            }
+            
+            // ESC para fechar modal
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Permitir Enter no campo de novo motoboy
+        document.getElementById('newMotoboy').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                addMotoboy();
+            }
+        });
     </script>
 </body>
-      <script>
+          <script>
     const acesso = localStorage.getItem("autenticado");
     if (acesso !== "sim") {
       const senha = prompt("Digite a senha para acessar:");
