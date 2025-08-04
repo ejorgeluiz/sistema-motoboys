@@ -3,463 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calçados 24h - Sistema de Prestação de Contas</title>
+    <title>Planilha Prestação Contas Motoboys - Calçados 24h</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: 100vh;
-            padding: 20px;
+            background: #f5f5f5;
+            padding: 10px;
         }
-
+        
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 100%;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
-            border: 1px solid #e5e7eb;
         }
-
+        
         .header {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: #4CAF50;
             color: white;
-            padding: 25px;
+            padding: 15px;
             text-align: center;
         }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .tabs {
+        
+        .toolbar {
+            background: #f8f9fa;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
             display: flex;
-            background: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
-
-        .tab {
-            padding: 15px 25px;
-            cursor: pointer;
+        
+        .toolbar input, .toolbar select, .toolbar button {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .toolbar button {
+            background: #4CAF50;
+            color: white;
             border: none;
-            background: none;
-            font-size: 16px;
-            font-weight: 500;
-            color: #6b7280;
-            transition: all 0.3s ease;
-            position: relative;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
         }
-
-        .tab.active {
-            color: #1f2937;
-            background: white;
-            border-bottom: 2px solid #3b82f6;
+        
+        .toolbar button:hover {
+            background: #45a049;
         }
-
-        .tab:hover:not(.active) {
-            background: #f3f4f6;
-            color: #374151;
+        
+        .btn-report {
+            background: #007bff;
         }
-
-        .tab-content {
-            display: none;
-            padding: 25px;
+        
+        .btn-report:hover {
+            background: #0056b3;
         }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Estilos da planilha */
+        
         .spreadsheet-container {
-            overflow-x: auto;
-            margin-bottom: 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
+            overflow: auto;
+            max-height: 70vh;
         }
-
+        
         .spreadsheet {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
-            min-width: 1200px;
+            font-size: 12px;
         }
-
+        
         .spreadsheet th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 12px 8px;
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            padding: 8px;
             text-align: center;
-            font-weight: 600;
-            border: 1px solid #dee2e6;
+            font-weight: bold;
             position: sticky;
             top: 0;
             z-index: 10;
+            min-width: 80px;
         }
-
+        
         .spreadsheet td {
-            padding: 8px;
-            border: 1px solid #dee2e6;
+            border: 1px solid #ddd;
+            padding: 6px;
             text-align: center;
+            background: white;
+            min-width: 80px;
         }
-
-        .spreadsheet tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .spreadsheet tr:hover {
-            background: #e3f2fd;
-        }
-
+        
         .spreadsheet input, .spreadsheet select {
             width: 100%;
             border: none;
-            padding: 6px;
-            font-size: 13px;
-            text-align: center;
             background: transparent;
-        }
-
-        .spreadsheet input:focus, .spreadsheet select:focus {
-            outline: 2px solid #3498db;
-            background: white;
-            border-radius: 4px;
-        }
-
-        .resultado {
-            background: #e8f5e8 !important;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        .totals-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .total-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: #1f2937;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid #e5e7eb;
-        }
-
-        .total-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.1em;
             text-align: center;
-            color: #374151;
-            font-weight: 600;
+            padding: 4px;
+            font-size: 12px;
         }
-
-        .total-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.9em;
+        
+        .spreadsheet input:focus, .spreadsheet select:focus {
+            background: #e3f2fd;
+            outline: 2px solid #2196F3;
         }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        
+        .spreadsheet .col-data { width: 90px; }
+        .spreadsheet .col-motoboy { width: 100px; }
+        .spreadsheet .col-rota { width: 100px; }
+        .spreadsheet .col-pedido { width: 80px; }
+        .spreadsheet .col-valor { width: 90px; }
+        .spreadsheet .col-status { width: 100px; }
+        .spreadsheet .col-obs { width: 150px; }
+        .spreadsheet .col-acoes { width: 100px; }
+        
+        .calculated {
+            background: #f0f8ff !important;
+            font-weight: bold;
         }
-
-        .btn {
-            padding: 12px 24px;
+        
+        .status-conferido { background: #d4edda !important; color: #155724; }
+        .status-sobrou { background: #cce5ff !important; color: #004085; }
+        .status-faltou { background: #f8d7da !important; color: #721c24; }
+        .status-ok { background: #d4edda !important; color: #155724; }
+        .status-pendente { background: #fff3cd !important; color: #856404; }
+        
+        .action-btn {
             border: none;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 10px;
+            margin: 0 2px;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        /* Cadastro de motoboys */
-        .motoboy-form {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .motoboy-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .motoboy-item {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
+        
         .delete-btn {
-            background: #ef4444;
+            background: #dc3545;
             color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-left: 5px;
-            transition: background 0.2s ease;
         }
-
-        .delete-btn:hover {
-            background: #dc2626;
-        }
-
+        
         .edit-btn {
-            background: #3b82f6;
+            background: #007bff;
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .report-section {
+            background: #f8f9fa;
+            border-top: 2px solid #ddd;
+            padding: 15px;
+        }
+        
+        .report-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            background: #007bff;
             color: white;
             border: none;
+            padding: 8px 15px;
             border-radius: 4px;
-            padding: 6px 10px;
             cursor: pointer;
-            font-size: 12px;
-            transition: background 0.2s ease;
-        }
-
-        .edit-btn:hover {
-            background: #2563eb;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        /* Checklist */
-        .checklist-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .checklist-table th, .checklist-table td {
-            padding: 12px;
-            border: 1px solid #dee2e6;
-            text-align: left;
-        }
-
-        .checklist-table th {
-            background: #f9fafb;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .checklist-table tr:nth-child(even) {
-            background: #f9fafb;
-        }
-
-        .checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        /* Modal para relatório */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .report-content {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            margin: 20px 0;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e5e7eb;
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .prestacao-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 2px solid #3498db;
-        }
-
-        .prestacao-card h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .prestacao-details {
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .prestacao-details .item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
-        }
-
-        .prestacao-details .item.total {
-            font-weight: bold;
-            border-top: 1px solid #ecf0f1;
             margin-top: 10px;
-            padding-top: 10px;
-            color: #2c3e50;
         }
-
-        .prestacao-details .rota-group {
-            background: #f8f9fa;
+        
+        .motoboy-manager {
+            background: #fff3cd;
             padding: 10px;
-            border-radius: 6px;
             margin-bottom: 10px;
+            border-radius: 4px;
         }
-
-        .prestacao-details .rota-title {
-            font-weight: bold;
-            color: #3498db;
-            margin-bottom: 8px;
+        
+        .motoboy-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
         }
-
+        
+        .motoboy-tag {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .motoboy-tag:hover {
+            background: #e3f2fd;
+        }
+        
+        .new-row {
+            background: #f0f8ff !important;
+        }
+        
+        .editing-row {
+            background: #fff3cd !important;
+        }
+        
+        .editing-row input, .editing-row select {
+            background: #fff !important;
+            border: 1px solid #007bff !important;
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 10px;
-            }
-            
-            .header {
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .controls {
+            .toolbar {
                 flex-direction: column;
+                align-items: stretch;
             }
             
-            .totals-section {
-                grid-template-columns: 1fr;
+            .toolbar > * {
+                margin-bottom: 5px;
+            }
+            
+            .spreadsheet {
+                font-size: 10px;
+            }
+            
+            .spreadsheet th, .spreadsheet td {
+                padding: 4px;
+                min-width: 60px;
             }
         }
     </style>
@@ -467,1046 +256,623 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Calçados 24h</h1>
-            <p>Sistema de Prestação de Contas</p>
+            <h1>🏢 Calçados 24h</h1>
+            <h2>📊 Planilha Prestação de Contas - Motoboys</h2>
         </div>
-
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('planilha')">📋 Planilha</button>
-            <button class="tab" onclick="showTab('motoboys')">🏍️ Motoboys</button>
-            <button class="tab" onclick="showTab('checklist')">✅ Checklist Bling</button>
+        
+        <!-- Gerenciamento de Motoboys -->
+        <div class="motoboy-manager">
+            <strong>👥 Motoboys:</strong>
+            <div class="motoboy-list" id="motoboyList"></div>
+            <input type="text" id="novoMotoboy" placeholder="Adicionar novo motoboy" style="margin-right: 5px;">
+            <button onclick="adicionarMotoboy()">➕ Adicionar</button>
         </div>
-
-        <!-- Aba Planilha -->
-        <div id="planilha" class="tab-content active">
-            <div class="controls">
-                <button class="btn btn-primary" onclick="addRow()">➕ Adicionar Linha</button>
-                <button class="btn btn-success" onclick="showReportOptions()">📊 Relatórios</button>
-                <button class="btn btn-warning" onclick="exportToExcel()">📄 Exportar Excel</button>
-                <button class="btn btn-primary" onclick="clearData()">🗑️ Limpar Dados</button>
-            </div>
-
-            <!-- Filtros de Relatório -->
-            <div id="reportFilters" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <h3>📊 Opções de Relatório</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
-                    <div class="form-group">
-                        <label>Motoboy:</label>
-                        <select id="filterMotoboy">
-                            <option value="">Todos</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Período:</label>
-                        <select id="filterPeriodo" onchange="toggleDateInputs()">
-                            <option value="hoje">Hoje</option>
-                            <option value="ontem">Ontem</option>
-                            <option value="semana">Esta Semana</option>
-                            <option value="mes">Este Mês</option>
-                            <option value="intervalo">Intervalo Personalizado</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="dateInputs" style="display: none; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
-                    <div class="form-group">
-                        <label>Data Inicial:</label>
-                        <input type="date" id="dataInicial">
-                    </div>
-                    <div class="form-group">
-                        <label>Data Final:</label>
-                        <input type="date" id="dataFinal">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn btn-success" onclick="generateFilteredReport()">Gerar Relatório</button>
-                    <button class="btn btn-primary" onclick="generateCards()">Gerar Cards</button>
-                    <button class="btn btn-secondary" onclick="generateWhatsAppCards()">📱 Cards WhatsApp</button>
-                    <button class="btn" onclick="hideReportOptions()" style="background: #6c757d; color: white;">Cancelar</button>
-                </div>
-            </div>
-
-            <div class="spreadsheet-container">
-                <table class="spreadsheet" id="mainTable">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Motoboy</th>
-                            <th>Rota</th>
-                            <th>Status</th>
-                            <th>Nº Pedido</th>
-                            <th>Dinheiro Recebido</th>
-                            <th>Valor da Rota</th>
-                            <th>Desconto</th>
-                            <th>Troco</th>
-                            <th>Dinheiro Retido</th>
-                            <th>Resultado</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="totals-section" id="totalsSection">
-            </div>
-
-            <!-- Cards de Prestação -->
-            <div id="cardsSection" style="display: none;">
-                <h3>📋 Cards de Prestação de Contas</h3>
-                <div class="cards-container" id="cardsContainer">
-                </div>
-            </div>
+        
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button onclick="adicionarLinha()">➕ Nova Linha</button>
+            <button onclick="limparTudo()" style="background: #dc3545;">🗑️ Limpar Tudo</button>
+            <button class="btn-report" onclick="gerarRelatorio()">📋 Relatório WhatsApp</button>
+            <button class="btn-report" onclick="gerarRelatorioPendencias()">⏳ Pendências</button>
+            <span style="margin-left: 20px; font-weight: bold;">
+                Total Entradas: <span id="totalEntradas">0</span> | 
+                Pendentes: <span id="totalPendentes">0</span> | 
+                A Pagar: R$ <span id="totalPagar">0,00</span>
+            </span>
         </div>
-
-        <!-- Aba Motoboys -->
-        <div id="motoboys" class="tab-content">
-            <div class="motoboy-form">
-                <h3>Cadastrar Novo Motoboy</h3>
-                <div class="form-group">
-                    <label for="newMotoboy">Nome do Motoboy:</label>
-                    <input type="text" id="newMotoboy" placeholder="Digite o nome do motoboy">
-                </div>
-                <button class="btn btn-primary" onclick="addMotoboy()">Adicionar Motoboy</button>
-            </div>
-
-            <h3>Motoboys Cadastrados</h3>
-            <div class="motoboy-list" id="motoboyList">
-            </div>
-        </div>
-
-        <!-- Aba Checklist -->
-        <div id="checklist" class="tab-content">
-            <h3>Checklist Bling - Conferência de Pedidos</h3>
-            <table class="checklist-table" id="checklistTable">
+        
+        <!-- Planilha -->
+        <div class="spreadsheet-container">
+            <table class="spreadsheet">
                 <thead>
                     <tr>
-                        <th>Nº Pedido</th>
-                        <th>Conferido?</th>
-                        <th>Formas de Pagamento</th>
-                        <th>Valor Total</th>
-                        <th>Data</th>
-                        <th>Observações</th>
-                        <th>Ações</th>
+                        <th class="col-data">📅 Data</th>
+                        <th class="col-motoboy">👤 Motoboy</th>
+                        <th class="col-rota">🛣️ Rota</th>
+                        <th class="col-pedido">📦 Pedido</th>
+                        <th class="col-valor">💵 Recebido Espécie</th>
+                        <th class="col-valor">💰 Recebido Real</th>
+                        <th class="col-valor">📊 Diferença</th>
+                        <th class="col-valor">🎯 Valor Rota</th>
+                        <th class="col-valor">⬇️ Descontos</th>
+                        <th class="col-valor">🔄 Troco</th>
+                        <th class="col-valor">🏦 Retido</th>
+                        <th class="col-valor">💰 Valor Final</th>
+                        <th class="col-status">📊 Status $</th>
+                        <th class="col-status">✅ Pagamento</th>
+                        <th class="col-obs">📝 Obs</th>
+                        <th class="col-acoes">🔧 Ações</th>
                     </tr>
                 </thead>
-                <tbody id="checklistBody">
+                <tbody id="spreadsheetBody">
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <!-- Modal para relatório -->
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>📊 Relatório por Rota</h2>
-            <div class="report-content" id="reportContent"></div>
-            <button class="btn btn-primary" onclick="copyReport()">📋 Copiar para WhatsApp</button>
+        
+        <!-- Relatórios -->
+        <div class="report-section">
+            <h3>📋 Relatórios para WhatsApp</h3>
+            <div style="margin: 10px 0;">
+                <label>📅 Data: </label>
+                <input type="text" id="dataRelatorio" placeholder="DD/MM/AAAA" maxlength="10" onkeyup="formatarData(this)" style="margin-right: 10px;">
+                <label>👤 Motoboy: </label>
+                <select id="motoboyRelatorio" style="margin-right: 10px;">
+                    <option value="">Todos</option>
+                </select>
+                <button class="btn-report" onclick="gerarRelatorio()">📋 Gerar Relatório</button>
+                <button class="btn-report" onclick="gerarRelatorioPendencias()">⏳ Relatório Pendências</button>
+            </div>
+            <div class="report-box" id="relatorioBox">Clique em "Gerar Relatório" para criar um relatório formatado para WhatsApp...</div>
+            <button class="copy-btn" onclick="copiarRelatorio()">📋 Copiar para WhatsApp</button>
         </div>
     </div>
 
     <script>
         // Dados globais
-        let data = [];
-        let motoboys = [];
-        let checklist = [];
-        const rotas = ['1', '2', '3', 'Única', 'Rota do dia'];
-        const formasPagamento = ['Pix', 'Dinheiro', 'Cartão Débito', 'Cartão Crédito', 'Transferência', 'Outro'];
-
+        let dados = JSON.parse(localStorage.getItem('dadosMotoboys') || '[]');
+        let motoboys = JSON.parse(localStorage.getItem('motoboys') || '[]');
+        let contadorLinhas = 1;
+        let linhaEditando = null;
+        
+        // Valores das rotas
+        const valoresRota = {
+            'Rota 1': 50,
+            'Rota 2': 60,
+            'Rota 3': 70,
+            'Única': 25,
+            'Rota do Dia': 80
+        };
+        
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            loadStoredData();
-            loadData();
-            updateMotoboyList();
-            updateChecklist();
-            
-            // Adicionar uma linha inicial se não houver dados
-            if (data.length === 0) {
-                addRow();
-            }
+            atualizarListaMotoboys();
+            carregarDados();
+            adicionarLinha(); // Adiciona primeira linha
+            definirDataHoje();
         });
-
-        // Carregar dados do armazenamento (usando variáveis JavaScript em vez de localStorage)
-        function loadStoredData() {
-            // Dados serão mantidos apenas durante a sessão
-            if (typeof window.calcados24h_data === 'undefined') {
-                data = [];
-                motoboys = [];
-                checklist = [];
-            } else {
-                data = window.calcados24h_data || [];
-                motoboys = window.calcados24h_motoboys || [];
-                checklist = window.calcados24h_checklist || [];
-            }
-        }
-
-        // Função para mostrar abas
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        // Função para adicionar linha
-        function addRow() {
-            const newId = Date.now();
-            const today = new Date().toLocaleDateString('pt-BR');
-            const newRow = {
-                id: newId,
-                data: today,
-                motoboy: '',
-                rota: '',
-                status: 'Pendente',
-                pedido: '',
-                dinheiroRecebido: 0,
-                valorRota: 0,
-                desconto: 0,
-                troco: 0,
-                dinheiroRetido: 0
-            };
-            
-            data.push(newRow);
-            saveData();
-            loadData();
-            
-            // Focar no primeiro campo da nova linha
-            setTimeout(() => {
-                const lastRow = document.querySelector('#tableBody tr:last-child');
-                if (lastRow) {
-                    const firstInput = lastRow.querySelector('input[type="date"]');
-                    if (firstInput) firstInput.focus();
-                }
-            }, 100);
-        }
-
-        // Função para carregar dados na tabela
-        function loadData() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="date" value="${row.data ? convertDateToInput(row.data) : ''}" onchange="updateData(${index}, 'data', new Date(this.value).toLocaleDateString('pt-BR'))" onkeydown="handleKeyNav(event, ${index}, 0)"></td>
-                    <td>
-                        <select onchange="updateData(${index}, 'motoboy', this.value)" onkeydown="handleKeyNav(event, ${index}, 1)">
-                            <option value="">Selecione...</option>
-                            ${motoboys.map(m => `<option value="${m}" ${row.motoboy === m ? 'selected' : ''}>${m}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td>
-                        <select onchange="updateData(${index}, 'rota', this.value)" onkeydown="handleKeyNav(event, ${index}, 2)">
-                            <option value="">Selecione...</option>
-                            ${rotas.map(r => `<option value="${r}" ${row.rota === r ? 'selected' : ''}>${r}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td>
-                        <select onchange="updateData(${index}, 'status', this.value)" onkeydown="handleKeyNav(event, ${index}, 3)">
-                            <option value="OK" ${row.status === 'OK' ? 'selected' : ''}>OK</option>
-                            <option value="Pendente" ${row.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
-                        </select>
-                    </td>
-                    <td><input type="text" value="${row.pedido || ''}" onchange="updateData(${index}, 'pedido', this.value)" onkeydown="handleKeyNav(event, ${index}, 4)"></td>
-                    <td><input type="number" step="0.01" value="${row.dinheiroRecebido || 0}" onchange="updateData(${index}, 'dinheiroRecebido', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 5)"></td>
-                    <td><input type="number" step="0.01" value="${row.valorRota || 0}" onchange="updateData(${index}, 'valorRota', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 6)"></td>
-                    <td><input type="number" step="0.01" value="${row.desconto || 0}" onchange="updateData(${index}, 'desconto', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 7)"></td>
-                    <td><input type="number" step="0.01" value="${row.troco || 0}" onchange="updateData(${index}, 'troco', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 8)"></td>
-                    <td><input type="number" step="0.01" value="${row.dinheiroRetido || 0}" onchange="updateData(${index}, 'dinheiroRetido', parseFloat(this.value) || 0)" onkeydown="handleKeyNav(event, ${index}, 9)"></td>
-                    <td class="resultado">R$ ${calculateResult(row).toFixed(2)}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="edit-btn" onclick="editRow(${index})" title="Editar">✏️</button>
-                            <button class="delete-btn" onclick="deleteRow(${index})" title="Excluir">🗑️</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            updateTotals();
-        }
-
-        // Converter data para formato de input
-        function convertDateToInput(dateStr) {
-            if (!dateStr) return '';
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-            }
-            return '';
-        }
-
-        // Navegação por teclado
-        function handleKeyNav(event, rowIndex, colIndex) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const nextCol = colIndex + 1;
-                const maxCols = 10; // número de colunas editáveis
-                
-                if (nextCol < maxCols) {
-                    // Próxima coluna
-                    const nextInput = document.querySelector(`#tableBody tr:nth-child(${rowIndex + 1}) td:nth-child(${nextCol + 1}) input, #tableBody tr:nth-child(${rowIndex + 1}) td:nth-child(${nextCol + 1}) select`);
-                    if (nextInput) nextInput.focus();
-                } else {
-                    // Próxima linha, primeira coluna
-                    const nextRowInput = document.querySelector(`#tableBody tr:nth-child(${rowIndex + 2}) td:first-child input`);
-                    if (nextRowInput) {
-                        nextRowInput.focus();
-                    } else {
-                        // Se não há próxima linha, criar uma nova
-                        addRow();
-                    }
-                }
-            }
-        }
-
-        // Função para calcular resultado
-        function calculateResult(row) {
-            const valorRota = parseFloat(row.valorRota) || 0;
-            const desconto = parseFloat(row.desconto) || 0;
-            const troco = parseFloat(row.troco) || 0;
-            const dinheiroRetido = parseFloat(row.dinheiroRetido) || 0;
-            
-            return valorRota - desconto - troco - dinheiroRetido;
-        }
-
-        // Função para atualizar dados
-        function updateData(index, field, value) {
-            if (data[index]) {
-                data[index][field] = value;
-                saveData();
-                loadData();
-                updateChecklist();
-            }
-        }
-
-        // Função para editar linha
-        function editRow(index) {
-            const row = data[index];
-            const newData = prompt(`Editando dados do pedido ${row.pedido || 'sem número'}:\n\nDigite os novos valores separados por vírgula na ordem:\nData, Motoboy, Rota, Status, Pedido, Dinheiro Recebido, Valor Rota, Desconto, Troco, Dinheiro Retido`, 
-                `${row.data || ''}, ${row.motoboy || ''}, ${row.rota || ''}, ${row.status || 'Pendente'}, ${row.pedido || ''}, ${row.dinheiroRecebido || 0}, ${row.valorRota || 0}, ${row.desconto || 0}, ${row.troco || 0}, ${row.dinheiroRetido || 0}`);
-            
-            if (newData !== null) {
-                const values = newData.split(',').map(v => v.trim());
-                if (values.length >= 10) {
-                    data[index] = {
-                        ...row,
-                        data: values[0] || row.data,
-                        motoboy: values[1] || row.motoboy,
-                        rota: values[2] || row.rota,
-                        status: values[3] || row.status,
-                        pedido: values[4] || row.pedido,
-                        dinheiroRecebido: parseFloat(values[5]) || 0,
-                        valorRota: parseFloat(values[6]) || 0,
-                        desconto: parseFloat(values[7]) || 0,
-                        troco: parseFloat(values[8]) || 0,
-                        dinheiroRetido: parseFloat(values[9]) || 0
-                    };
-                    saveData();
-                    loadData();
-                    updateChecklist();
-                }
-            }
-        }
-
-        function deleteRow(index) {
-            if (confirm('Tem certeza que deseja excluir esta linha?')) {
-                data.splice(index, 1);
-                saveData();
-                loadData();
-                updateChecklist();
-            }
-        }
-
-        // Função para atualizar totais
-        function updateTotals() {
-            const totalsSection = document.getElementById('totalsSection');
-            
-            // Totais por motoboy
-            const motoboyTotals = {};
-            data.forEach(row => {
-                if (row.motoboy) {
-                    if (!motoboyTotals[row.motoboy]) {
-                        motoboyTotals[row.motoboy] = 0;
-                    }
-                    motoboyTotals[row.motoboy] += calculateResult(row);
-                }
-            });
-
-            // Totais por rota
-            const rotaTotals = {};
-            data.forEach(row => {
-                if (row.rota) {
-                    if (!rotaTotals[row.rota]) {
-                        rotaTotals[row.rota] = 0;
-                    }
-                    rotaTotals[row.rota] += calculateResult(row);
-                }
-            });
-
-            // Total geral
-            const totalGeral = data.reduce((sum, row) => sum + calculateResult(row), 0);
-
-            totalsSection.innerHTML = `
-                <div class="total-card">
-                    <h3>💰 Totais por Motoboy</h3>
-                    ${Object.entries(motoboyTotals).map(([motoboy, total]) => 
-                        `<div class="total-item"><span>${motoboy}:</span><span>R$ ${total.toFixed(2)}</span></div>`
-                    ).join('')}
-                </div>
-                <div class="total-card">
-                    <h3>🛣️ Totais por Rota</h3>
-                    ${Object.entries(rotaTotals).map(([rota, total]) => 
-                        `<div class="total-item"><span>Rota ${rota}:</span><span>R$ ${total.toFixed(2)}</span></div>`
-                    ).join('')}
-                </div>
-                <div class="total-card">
-                    <h3>📊 Total Geral</h3>
-                    <div class="total-item"><span><strong>TOTAL:</strong></span><span><strong>R$ ${totalGeral.toFixed(2)}</strong></span></div>
-                </div>
-            `;
-        }
-
-        // Função para adicionar motoboy
-        function addMotoboy() {
-            const input = document.getElementById('newMotoboy');
-            const name = input.value.trim();
-            
-            if (name && !motoboys.includes(name)) {
-                motoboys.push(name);
-                saveMotoboys();
-                updateMotoboyList();
-                loadData(); // Recarregar para atualizar dropdowns
-                input.value = '';
-            } else if (motoboys.includes(name)) {
-                alert('Este motoboy já está cadastrado!');
-            }
-        }
-
-        // Função para atualizar lista de motoboys
-        function updateMotoboyList() {
-            const list = document.getElementById('motoboyList');
-            list.innerHTML = motoboys.map((motoboy, index) => `
-                <div class="motoboy-item">
-                    <span>${motoboy}</span>
-                    <button class="delete-btn" onclick="deleteMotoboy(${index})">🗑️</button>
-                </div>
-            `).join('');
-        }
-
-        // Função para deletar motoboy
-        function deleteMotoboy(index) {
-            if (confirm('Tem certeza que deseja excluir este motoboy?')) {
-                motoboys.splice(index, 1);
-                saveMotoboys();
-                updateMotoboyList();
-                loadData();
-            }
-        }
-
-        // Função para atualizar checklist
-        function updateChecklist() {
-            const checklistBody = document.getElementById('checklistBody');
-            
-            // Adicionar pedidos que não estão no checklist
-            data.forEach(row => {
-                if (row.pedido && !checklist.find(c => c.pedido === row.pedido)) {
-                    checklist.push({
-                        pedido: row.pedido,
-                        conferido: false,
-                        formasPagamento: [],
-                        valorTotal: parseFloat(row.valorRota) || 0,
-                        data: new Date().toLocaleDateString('pt-BR'),
-                        observacoes: ''
-                    });
-                }
-            });
-
-            // Remover pedidos que não existem mais
-            checklist = checklist.filter(c => data.find(d => d.pedido === c.pedido));
-
-            checklistBody.innerHTML = checklist.map((item, index) => `
-                <tr>
-                    <td>${item.pedido}</td>
-                    <td><input type="checkbox" class="checkbox" ${item.conferido ? 'checked' : ''} onchange="updateChecklistItem(${index}, 'conferido', this.checked)"></td>
-                    <td>
-                        <div style="margin-bottom: 10px;">
-                            <select onchange="addFormaPagamento(${index}, this.value); this.value='';">
-                                <option value="">Adicionar forma...</option>
-                                ${formasPagamento.map(fp => `<option value="${fp}">${fp}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div id="formasPag_${index}">
-                            ${(item.formasPagamento || []).map((fp, fpIndex) => 
-                                `<div style="display: flex; align-items: center; margin-bottom: 5px;">
-                                    <span style="margin-right: 10px;">${fp.tipo}: R$ ${fp.valor.toFixed(2)}</span>
-                                    <button class="delete-btn" onclick="removeFormaPagamento(${index}, ${fpIndex})">×</button>
-                                </div>`
-                            ).join('')}
-                        </div>
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" value="${item.valorTotal || 0}" 
-                               onchange="updateChecklistItem(${index}, 'valorTotal', parseFloat(this.value) || 0)"
-                               style="width: 100px;">
-                    </td>
-                    <td><input type="date" value="${convertDateToInput(item.data)}" onchange="updateChecklistItem(${index}, 'data', new Date(this.value).toLocaleDateString('pt-BR'))"></td>
-                    <td><input type="text" value="${item.observacoes || ''}" onchange="updateChecklistItem(${index}, 'observacoes', this.value)" style="min-width: 150px;"></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="edit-btn" onclick="editChecklistItem(${index})" title="Editar">✏️</button>
-                            <button class="delete-btn" onclick="deleteChecklistItem(${index})" title="Excluir">🗑️</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-
-            saveChecklist();
-        }
-
-        // Função para adicionar forma de pagamento
-        function addFormaPagamento(checklistIndex, tipo) {
-            if (!tipo) return;
-            
-            const valor = prompt(`Digite o valor para ${tipo}:`, '0.00');
-            if (valor !== null && !isNaN(parseFloat(valor))) {
-                if (!checklist[checklistIndex].formasPagamento) {
-                    checklist[checklistIndex].formasPagamento = [];
-                }
-                checklist[checklistIndex].formasPagamento.push({
-                    tipo: tipo,
-                    valor: parseFloat(valor)
-                });
-                saveChecklist();
-                updateChecklist();
-            }
-        }
-
-        // Função para remover forma de pagamento
-        function removeFormaPagamento(checklistIndex, formaIndex) {
-            checklist[checklistIndex].formasPagamento.splice(formaIndex, 1);
-            saveChecklist();
-            updateChecklist();
-        }
-
-        // Função para editar item do checklist
-        function editChecklistItem(index) {
-            const item = checklist[index];
-            const formasText = (item.formasPagamento || []).map(fp => `${fp.tipo}: R$ ${fp.valor.toFixed(2)}`).join(', ');
-            
-            const newData = prompt(`Editando checklist do pedido ${item.pedido}:\n\nObservações atuais: ${item.observacoes || 'Nenhuma'}\nFormas de pagamento: ${formasText || 'Nenhuma'}\n\nDigite as novas observações:`, item.observacoes || '');
-            
-            if (newData !== null) {
-                checklist[index].observacoes = newData;
-                saveChecklist();
-                updateChecklist();
-            }
-        }
-
-        // Função para deletar item do checklist
-        function deleteChecklistItem(index) {
-            if (confirm('Tem certeza que deseja excluir este item do checklist?')) {
-                checklist.splice(index, 1);
-                saveChecklist();
-                updateChecklist();
-            }
-        }
-
-        // Função para atualizar item do checklist
-        function updateChecklistItem(index, field, value) {
-            if (checklist[index]) {
-                checklist[index][field] = value;
-                saveChecklist();
-            }
-        }
-
-        // Funções de filtro de relatório
-        function updateFilterOptions() {
-            const filterMotoboy = document.getElementById('filterMotoboy');
-            if (filterMotoboy) {
-                filterMotoboy.innerHTML = '<option value="">Todos</option>';
-                motoboys.forEach(motoboy => {
-                    filterMotoboy.innerHTML += `<option value="${motoboy}">${motoboy}</option>`;
-                });
-            }
-        }
-
-        function showReportOptions() {
-            document.getElementById('reportFilters').style.display = 'block';
-            updateFilterOptions();
-        }
-
-        function hideReportOptions() {
-            document.getElementById('reportFilters').style.display = 'none';
-            document.getElementById('cardsSection').style.display = 'none';
-        }
-
-        function toggleDateInputs() {
-            const periodo = document.getElementById('filterPeriodo').value;
-            const dateInputs = document.getElementById('dateInputs');
-            
-            if (periodo === 'intervalo') {
-                dateInputs.style.display = 'grid';
-            } else {
-                dateInputs.style.display = 'none';
-            }
-        }
-
-        function getDateRange(periodo) {
+        
+        // Definir data de hoje
+        function definirDataHoje() {
             const hoje = new Date();
-            const ontem = new Date(hoje);
-            ontem.setDate(hoje.getDate() - 1);
-            
-            switch (periodo) {
-                case 'hoje':
-                    return {
-                        inicio: hoje.toLocaleDateString('pt-BR'),
-                        fim: hoje.toLocaleDateString('pt-BR')
-                    };
-                case 'ontem':
-                    return {
-                        inicio: ontem.toLocaleDateString('pt-BR'),
-                        fim: ontem.toLocaleDateString('pt-BR')
-                    };
-                case 'semana':
-                    const inicioSemana = new Date(hoje);
-                    inicioSemana.setDate(hoje.getDate() - hoje.getDay());
-                    return {
-                        inicio: inicioSemana.toLocaleDateString('pt-BR'),
-                        fim: hoje.toLocaleDateString('pt-BR')
-                    };
-                case 'mes':
-                    const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-                    return {
-                        inicio: inicioMes.toLocaleDateString('pt-BR'),
-                        fim: hoje.toLocaleDateString('pt-BR')
-                    };
-                case 'intervalo':
-                    const dataInicial = document.getElementById('dataInicial').value;
-                    const dataFinal = document.getElementById('dataFinal').value;
-                    return {
-                        inicio: dataInicial ? new Date(dataInicial).toLocaleDateString('pt-BR') : '',
-                        fim: dataFinal ? new Date(dataFinal).toLocaleDateString('pt-BR') : ''
-                    };
-                default:
-                    return { inicio: '', fim: '' };
+            const dataFormatada = hoje.getDate().toString().padStart(2, '0') + '/' + 
+                                 (hoje.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                                 hoje.getFullYear();
+            document.getElementById('dataRelatorio').value = dataFormatada;
+        }
+        
+        // Formatação de data
+        function formatarData(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length >= 2) value = value.substring(0,2) + '/' + value.substring(2);
+            if (value.length >= 5) value = value.substring(0,5) + '/' + value.substring(5,9);
+            input.value = value;
+        }
+        
+        // Gerenciar motoboys
+        function adicionarMotoboy() {
+            const nome = document.getElementById('novoMotoboy').value.trim();
+            if (nome && !motoboys.includes(nome)) {
+                motoboys.push(nome);
+                localStorage.setItem('motoboys', JSON.stringify(motoboys));
+                atualizarListaMotoboys();
+                document.getElementById('novoMotoboy').value = '';
             }
         }
-
-        function filterData() {
-            const motoboyFiltro = document.getElementById('filterMotoboy').value;
-            const periodo = document.getElementById('filterPeriodo').value;
-            const { inicio, fim } = getDateRange(periodo);
+        
+        function removerMotoboy(nome) {
+            if (confirm('Remover ' + nome + '?')) {
+                motoboys = motoboys.filter(m => m !== nome);
+                localStorage.setItem('motoboys', JSON.stringify(motoboys));
+                atualizarListaMotoboys();
+            }
+        }
+        
+        function atualizarListaMotoboys() {
+            // Lista visual
+            const lista = document.getElementById('motoboyList');
+            lista.innerHTML = '';
             
-            return data.filter(row => {
-                // Filtro por motoboy
-                if (motoboyFiltro && row.motoboy !== motoboyFiltro) {
-                    return false;
+            if (motoboys.length === 0) {
+                lista.innerHTML = '<span style="color: #666; font-style: italic;">Nenhum motoboy cadastrado</span>';
+            } else {
+                motoboys.forEach(nome => {
+                    const tag = document.createElement('span');
+                    tag.className = 'motoboy-tag';
+                    tag.innerHTML = `${nome} <span onclick="removerMotoboy('${nome}')" style="color: red; cursor: pointer;">×</span>`;
+                    lista.appendChild(tag);
+                });
+            }
+            
+            // Select do relatório
+            const select = document.getElementById('motoboyRelatorio');
+            const valorAtual = select.value;
+            select.innerHTML = '<option value="">Todos</option>';
+            motoboys.forEach(nome => {
+                const option = document.createElement('option');
+                option.value = nome;
+                option.textContent = nome;
+                select.appendChild(option);
+            });
+            select.value = valorAtual;
+        }
+        
+        // Adicionar linha na planilha
+        function adicionarLinha(dadosExistentes = null) {
+            const tbody = document.getElementById('spreadsheetBody');
+            const tr = document.createElement('tr');
+            const id = dadosExistentes ? dadosExistentes.id : Date.now() + contadorLinhas;
+            
+            if (!dadosExistentes) {
+                tr.className = 'new-row';
+            }
+            
+            const hoje = new Date();
+            const dataHoje = hoje.getDate().toString().padStart(2, '0') + '/' + 
+                           (hoje.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                           hoje.getFullYear();
+            
+            tr.innerHTML = `
+                <td><input type="text" placeholder="DD/MM/AAAA" maxlength="10" onkeyup="formatarData(this)" value="${dadosExistentes?.data || dataHoje}" onchange="salvarDados()"></td>
+                <td>
+                    <select onchange="salvarDados()">
+                        <option value="">Selecione...</option>
+                        ${motoboys.map(m => `<option value="${m}" ${dadosExistentes?.motoboy === m ? 'selected' : ''}>${m}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <select onchange="atualizarValorRota(this); salvarDados()">
+                        <option value="">Selecione...</option>
+                        <option value="Rota 1" ${dadosExistentes?.rota === 'Rota 1' ? 'selected' : ''}>Rota 1</option>
+                        <option value="Rota 2" ${dadosExistentes?.rota === 'Rota 2' ? 'selected' : ''}>Rota 2</option>
+                        <option value="Rota 3" ${dadosExistentes?.rota === 'Rota 3' ? 'selected' : ''}>Rota 3</option>
+                        <option value="Única" ${dadosExistentes?.rota === 'Única' ? 'selected' : ''}>Única</option>
+                        <option value="Rota do Dia" ${dadosExistentes?.rota === 'Rota do Dia' ? 'selected' : ''}>Rota do Dia</option>
+                    </select>
+                </td>
+                <td><input type="number" placeholder="1001" value="${dadosExistentes?.pedido || ''}" onchange="salvarDados()"></td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.recebidoEspecie || ''}" onchange="calcularLinha(this); salvarDados()"></td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.recebidoReal || ''}" onchange="calcularLinha(this); salvarDados()"></td>
+                <td class="calculated">R$ 0,00</td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.valorRota || ''}" readonly></td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.descontos || ''}" onchange="calcularLinha(this); salvarDados()"></td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.troco || ''}" onchange="calcularLinha(this); salvarDados()"></td>
+                <td><input type="number" step="0.01" placeholder="0.00" value="${dadosExistentes?.retido || ''}" onchange="calcularLinha(this); salvarDados()"></td>
+                <td class="calculated">R$ 0,00</td>
+                <td class="calculated">-</td>
+                <td>
+                    <select onchange="calcularLinha(this); salvarDados()">
+                        <option value="PENDENTE" ${dadosExistentes?.status === 'PENDENTE' ? 'selected' : ''}>PENDENTE</option>
+                        <option value="OK" ${dadosExistentes?.status === 'OK' ? 'selected' : ''}>OK</option>
+                    </select>
+                </td>
+                <td><input type="text" placeholder="Observações..." value="${dadosExistentes?.obs || ''}" onchange="salvarDados()"></td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editarLinha(this)" title="Editar linha">✏️</button>
+                    <button class="action-btn delete-btn" onclick="removerLinha(this)" title="Remover linha">🗑️</button>
+                </td>
+            `;
+            
+            tr.dataset.id = id;
+            tbody.appendChild(tr);
+            
+            // Calcular valores se for linha existente
+            if (dadosExistentes) {
+                setTimeout(() => calcularLinha(tr.querySelector('input[type="number"]')), 100);
+            }
+            
+            contadorLinhas++;
+            atualizarTotais();
+        }
+        
+        // Editar linha
+        function editarLinha(button) {
+            const tr = button.closest('tr');
+            
+            if (linhaEditando && linhaEditando !== tr) {
+                // Se já está editando outra linha, sair do modo de edição
+                desabilitarEdicao(linhaEditando);
+                const oldEditBtn = linhaEditando.querySelector('.edit-btn');
+                oldEditBtn.textContent = '✏️';
+                oldEditBtn.title = 'Editar linha';
+            }
+            
+            if (linhaEditando === tr) {
+                // Se clicou na mesma linha, desabilitar edição
+                desabilitarEdicao(tr);
+                linhaEditando = null;
+                button.textContent = '✏️';
+                button.title = 'Editar linha';
+            } else {
+                // Habilitar edição na nova linha
+                habilitarEdicao(tr);
+                linhaEditando = tr;
+                button.textContent = '💾';
+                button.title = 'Salvar alterações';
+            }
+        }
+        
+        function habilitarEdicao(tr) {
+            tr.className = tr.className.replace('new-row', '') + ' editing-row';
+        }
+        
+        function desabilitarEdicao(tr) {
+            tr.className = tr.className.replace('editing-row', '');
+            salvarDados();
+        }
+        
+        // Atualizar valor da rota
+        function atualizarValorRota(select) {
+            const rota = select.value;
+            const valor = valoresRota[rota] || 0;
+            const tr = select.closest('tr');
+            tr.cells[7].querySelector('input').value = valor;
+            calcularLinha(select);
+        }
+        
+        // Calcular valores da linha
+        function calcularLinha(element) {
+            const tr = element.closest('tr');
+            const cells = tr.cells;
+            
+            const recebidoEspecie = parseFloat(cells[4].querySelector('input').value || 0);
+            const recebidoReal = parseFloat(cells[5].querySelector('input').value || 0);
+            const valorRota = parseFloat(cells[7].querySelector('input').value || 0);
+            const descontos = parseFloat(cells[8].querySelector('input').value || 0);
+            const troco = parseFloat(cells[9].querySelector('input').value || 0);
+            const retido = parseFloat(cells[10].querySelector('input').value || 0);
+            
+            // Diferença
+            const diferenca = recebidoReal - recebidoEspecie;
+            let statusDiferenca = '✅ CONFERIDO';
+            let classDiferenca = 'status-conferido';
+            
+            if (diferenca > 0) {
+                statusDiferenca = `💰 +R$ ${diferenca.toFixed(2)}`;
+                classDiferenca = 'status-sobrou';
+            } else if (diferenca < 0) {
+                statusDiferenca = `❌ -R$ ${Math.abs(diferenca).toFixed(2)}`;
+                classDiferenca = 'status-faltou';
+            }
+            
+            cells[6].textContent = statusDiferenca;
+            cells[6].className = `calculated ${classDiferenca}`;
+            
+            // Valor Final
+            const valorFinal = valorRota - descontos - troco - retido;
+            cells[11].textContent = `R$ ${valorFinal.toFixed(2)}`;
+            
+            // Status Financeiro
+            const status = cells[13].querySelector('select').value;
+            cells[12].textContent = status === 'OK' ? '✅ PAGO' : '⏳ PENDENTE';
+            cells[12].className = `calculated ${status === 'OK' ? 'status-ok' : 'status-pendente'}`;
+            
+            atualizarTotais();
+        }
+        
+        // Remover linha
+        function removerLinha(button) {
+            if (confirm('Remover esta linha?')) {
+                const tr = button.closest('tr');
+                if (linhaEditando === tr) {
+                    linhaEditando = null;
                 }
+                tr.remove();
+                salvarDados();
+                atualizarTotais();
+            }
+        }
+        
+        // Salvar dados
+        function salvarDados() {
+            const tbody = document.getElementById('spreadsheetBody');
+            const linhas = tbody.querySelectorAll('tr');
+            
+            dados = [];
+            linhas.forEach(tr => {
+                const cells = tr.cells;
+                const data = cells[0].querySelector('input').value;
+                const motoboy = cells[1].querySelector('select').value;
+                const pedido = cells[3].querySelector('input').value;
                 
-                // Filtro por data
-                if (inicio && fim) {
-                    const dataRow = row.data;
-                    if (!dataRow) return false;
-                    
-                    const [diaRow, mesRow, anoRow] = dataRow.split('/');
-                    const [diaInicio, mesInicio, anoInicio] = inicio.split('/');
-                    const [diaFim, mesFim, anoFim] = fim.split('/');
-                    
-                    const dataRowDate = new Date(anoRow, mesRow - 1, diaRow);
-                    const dataInicioDate = new Date(anoInicio, mesInicio - 1, diaInicio);
-                    const dataFimDate = new Date(anoFim, mesFim - 1, diaFim);
-                    
-                    return dataRowDate >= dataInicioDate && dataRowDate <= dataFimDate;
+                if (data && motoboy && pedido) { // Só salva se tiver dados básicos
+                    const entrada = {
+                        id: tr.dataset.id,
+                        data: data,
+                        motoboy: motoboy,
+                        rota: cells[2].querySelector('select').value,
+                        pedido: pedido,
+                        recebidoEspecie: parseFloat(cells[4].querySelector('input').value || 0),
+                        recebidoReal: parseFloat(cells[5].querySelector('input').value || 0),
+                        valorRota: parseFloat(cells[7].querySelector('input').value || 0),
+                        descontos: parseFloat(cells[8].querySelector('input').value || 0),
+                        troco: parseFloat(cells[9].querySelector('input').value || 0),
+                        retido: parseFloat(cells[10].querySelector('input').value || 0),
+                        status: cells[13].querySelector('select').value,
+                        obs: cells[14].querySelector('input').value
+                    };
+                    dados.push(entrada);
                 }
-                
-                return true;
+            });
+            
+            localStorage.setItem('dadosMotoboys', JSON.stringify(dados));
+        }
+        
+        // Carregar dados
+        function carregarDados() {
+            dados.forEach(item => {
+                adicionarLinha(item);
             });
         }
-
-        function generateFilteredReport() {
-            const filteredData = filterData();
+        
+        // Atualizar totais
+        function atualizarTotais() {
+            const tbody = document.getElementById('spreadsheetBody');
+            const linhas = tbody.querySelectorAll('tr');
             
-            if (filteredData.length === 0) {
-                alert('Nenhum dado encontrado para os filtros selecionados.');
+            let total = 0;
+            let pendentes = 0;
+            let totalPagar = 0;
+            
+            linhas.forEach(tr => {
+                const cells = tr.cells;
+                const data = cells[0].querySelector('input').value;
+                const motoboy = cells[1].querySelector('select').value;
+                const pedido = cells[3].querySelector('input').value;
+                
+                if (data && motoboy && pedido) {
+                    total++;
+                    const status = cells[13].querySelector('select').value;
+                    if (status === 'PENDENTE') {
+                        pendentes++;
+                        const valorRota = parseFloat(cells[7].querySelector('input').value || 0);
+                        const descontos = parseFloat(cells[8].querySelector('input').value || 0);
+                        const troco = parseFloat(cells[9].querySelector('input').value || 0);
+                        const retido = parseFloat(cells[10].querySelector('input').value || 0);
+                        totalPagar += valorRota - descontos - troco - retido;
+                    }
+                }
+            });
+            
+            document.getElementById('totalEntradas').textContent = total;
+            document.getElementById('totalPendentes').textContent = pendentes;
+            document.getElementById('totalPagar').textContent = totalPagar.toFixed(2);
+        }
+        
+        // Limpar tudo
+        function limparTudo() {
+            if (confirm('Limpar todos os dados? Esta ação não pode ser desfeita!')) {
+                dados = [];
+                localStorage.removeItem('dadosMotoboys');
+                document.getElementById('spreadsheetBody').innerHTML = '';
+                linhaEditando = null;
+                adicionarLinha();
+                atualizarTotais();
+            }
+        }
+        
+        // Gerar relatório
+        function gerarRelatorio() {
+            const dataFiltro = document.getElementById('dataRelatorio').value;
+            const motoboyFiltro = document.getElementById('motoboyRelatorio').value;
+            
+            if (!dataFiltro) {
+                alert('Selecione uma data para o relatório');
                 return;
             }
             
-            const motoboyTotals = {};
-            
-            filteredData.forEach(row => {
-                if (row.motoboy) {
-                    if (!motoboyTotals[row.motoboy]) {
-                        motoboyTotals[row.motoboy] = {
-                            rotas: {},
-                            total: 0,
-                            pedidos: []
-                        };
-                    }
-                    if (row.rota) {
-                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
-                            motoboyTotals[row.motoboy].rotas[row.rota] = 0;
-                        }
-                        const resultado = calculateResult(row);
-                        motoboyTotals[row.motoboy].rotas[row.rota] += resultado;
-                        motoboyTotals[row.motoboy].total += resultado;
-                        motoboyTotals[row.motoboy].pedidos.push(row);
-                    }
-                }
+            const dadosFiltrados = dados.filter(item => {
+                const dataOk = item.data === dataFiltro;
+                const motoboyOk = !motoboyFiltro || item.motoboy === motoboyFiltro;
+                return dataOk && motoboyOk;
             });
-
-            const totalGeral = filteredData.reduce((sum, row) => sum + calculateResult(row), 0);
-            const periodo = document.getElementById('filterPeriodo').value;
-            const { inicio, fim } = getDateRange(periodo);
-
-            let report = `🚚 RELATÓRIO CALÇADOS 24H\n`;
-            report += `📅 Período: ${inicio === fim ? inicio : `${inicio} a ${fim}`}\n`;
-            report += `🏍️ Motoboy: ${document.getElementById('filterMotoboy').value || 'Todos'}\n\n`;
-
-            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
-                report += `👤 ${motoboy.toUpperCase()}\n`;
-                Object.entries(dados.rotas).forEach(([rota, valor]) => {
-                    report += `   Rota ${rota}: R$ ${valor.toFixed(2)}\n`;
-                });
-                report += `   TOTAL: R$ ${dados.total.toFixed(2)}\n`;
-                report += `   Pedidos: ${dados.pedidos.length}\n\n`;
-            });
-
-            report += `💰 TOTAL GERAL: R$ ${totalGeral.toFixed(2)}\n`;
-            report += `📊 Total de pedidos: ${filteredData.length}`;
-
-            document.getElementById('reportContent').textContent = report;
-            document.getElementById('reportModal').style.display = 'block';
-        }
-
-        function generateCards() {
-            const filteredData = filterData();
             
-            if (filteredData.length === 0) {
-                alert('Nenhum dado encontrado para os filtros selecionados.');
+            if (dadosFiltrados.length === 0) {
+                document.getElementById('relatorioBox').textContent = 'Nenhum dado encontrado para os filtros selecionados.';
                 return;
             }
-
-            const motoboyTotals = {};
             
-            filteredData.forEach(row => {
-                if (row.motoboy) {
-                    if (!motoboyTotals[row.motoboy]) {
-                        motoboyTotals[row.motoboy] = {
-                            rotas: {},
-                            total: 0,
-                            pedidos: [],
-                            dinheiroRecebido: 0,
-                            valorRota: 0,
-                            desconto: 0,
-                            troco: 0,
-                            dinheiroRetido: 0
-                        };
-                    }
-                    
-                    const resultado = calculateResult(row);
-                    motoboyTotals[row.motoboy].total += resultado;
-                    motoboyTotals[row.motoboy].pedidos.push(row);
-                    motoboyTotals[row.motoboy].dinheiroRecebido += parseFloat(row.dinheiroRecebido) || 0;
-                    motoboyTotals[row.motoboy].valorRota += parseFloat(row.valorRota) || 0;
-                    motoboyTotals[row.motoboy].desconto += parseFloat(row.desconto) || 0;
-                    motoboyTotals[row.motoboy].troco += parseFloat(row.troco) || 0;
-                    motoboyTotals[row.motoboy].dinheiroRetido += parseFloat(row.dinheiroRetido) || 0;
-                    
-                    if (row.rota) {
-                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
-                            motoboyTotals[row.motoboy].rotas[row.rota] = {
-                                valor: 0,
-                                pedidos: []
-                            };
-                        }
-                        motoboyTotals[row.motoboy].rotas[row.rota].valor += resultado;
-                        motoboyTotals[row.motoboy].rotas[row.rota].pedidos.push(row);
-                    }
+            let relatorio = `🏢 CALÇADOS 24H\n🚛 RELATÓRIO DE ENTREGAS - ${dataFiltro}\n`;
+            relatorio += `${motoboyFiltro ? `Motoboy: ${motoboyFiltro}` : 'Todos os Motoboys'}\n`;
+            relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // Agrupar por motoboy
+            const porMotoboy = {};
+            dadosFiltrados.forEach(item => {
+                if (!porMotoboy[item.motoboy]) {
+                    porMotoboy[item.motoboy] = [];
                 }
+                porMotoboy[item.motoboy].push(item);
             });
-
-            const periodo = document.getElementById('filterPeriodo').value;
-            const { inicio, fim } = getDateRange(periodo);
             
-            let cardsHtml = '';
-            
-            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
-                cardsHtml += `
-                    <div class="prestacao-card">
-                        <h4>
-                            🏍️ ${motoboy}
-                            <span style="font-size: 12px; color: #7f8c8d;">
-                                ${inicio === fim ? inicio : `${inicio} a ${fim}`}
-                            </span>
-                        </h4>
-                        <div class="prestacao-details">
-                `;
+            Object.keys(porMotoboy).forEach(motoboy => {
+                relatorio += `👤 ${motoboy.toUpperCase()}\n`;
+                relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
                 
-                // Detalhes por rota
-                Object.entries(dados.rotas).forEach(([rota, rotaData]) => {
-                    cardsHtml += `
-                        <div class="rota-group">
-                            <div class="rota-title">📍 Rota ${rota} (${rotaData.pedidos.length} pedidos)</div>
-                    `;
+                let totalMotoboy = 0;
+                let pendenteMotoboy = 0;
+                
+                porMotoboy[motoboy].forEach(item => {
+                    const valorFinal = item.valorRota - item.descontos - item.troco - item.retido;
+                    const diferenca = item.recebidoReal - item.recebidoEspecie;
                     
-                    rotaData.pedidos.forEach(pedido => {
-                        cardsHtml += `
-                            <div class="item">
-                                <span>Pedido ${pedido.pedido}:</span>
-                                <span>R$ ${calculateResult(pedido).toFixed(2)}</span>
-                            </div>
-                        `;
-                    });
+                    let statusDiferenca = '';
+                    if (diferenca > 0) statusDiferenca = ` (+R$ ${diferenca.toFixed(2)})`;
+                    else if (diferenca < 0) statusDiferenca = ` (-R$ ${Math.abs(diferenca).toFixed(2)})`;
                     
-                    cardsHtml += `
-                            <div class="item total">
-                                <span>Subtotal Rota ${rota}:</span>
-                                <span>R$ ${rotaData.valor.toFixed(2)}</span>
-                            </div>
-                        </div>
-                    `;
+                    const statusPagamento = item.status === 'OK' ? '✅' : '⏳';
+                    
+                    relatorio += `${statusPagamento} Pedido ${item.pedido} | ${item.rota}\n`;
+                    relatorio += `   💰 Valor Final: R$ ${valorFinal.toFixed(2)}${statusDiferenca}\n`;
+                    if (item.obs) relatorio += `   📝 ${item.obs}\n`;
+                    relatorio += `\n`;
+                    
+                    if (item.status === 'PENDENTE') {
+                        pendenteMotoboy += valorFinal;
+                    }
+                    totalMotoboy += valorFinal;
                 });
                 
-                // Resumo geral do motoboy
-                cardsHtml += `
-                    <div class="item">
-                        <span>💰 Dinheiro Recebido:</span>
-                        <span>R$ ${dados.dinheiroRecebido.toFixed(2)}</span>
-                    </div>
-                    <div class="item">
-                        <span>🎯 Valor das Rotas:</span>
-                        <span>R$ ${dados.valorRota.toFixed(2)}</span>
-                    </div>
-                    <div class="item">
-                        <span>🏷️ Descontos:</span>
-                        <span>R$ ${dados.desconto.toFixed(2)}</span>
-                    </div>
-                    <div class="item">
-                        <span>💸 Trocos:</span>
-                        <span>R$ ${dados.troco.toFixed(2)}</span>
-                    </div>
-                    <div class="item">
-                        <span>🏦 Dinheiro Retido:</span>
-                        <span>R$ ${dados.dinheiroRetido.toFixed(2)}</span>
-                    </div>
-                    <div class="item total">
-                        <span>📊 TOTAL FINAL:</span>
-                        <span>R$ ${dados.total.toFixed(2)}</span>
-                    </div>
-                    <div class="item">
-                        <span>📋 Total de Pedidos:</span>
-                        <span>${dados.pedidos.length}</span>
-                    </div>
-                </div>
-                    </div>
-                `;
+                relatorio += `💰 Total ${motoboy}: R$ ${totalMotoboy.toFixed(2)}\n`;
+                if (pendenteMotoboy > 0) {
+                    relatorio += `⏳ Pendente: R$ ${pendenteMotoboy.toFixed(2)}\n`;
+                }
+                relatorio += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
             });
             
-            document.getElementById('cardsContainer').innerHTML = cardsHtml;
-            document.getElementById('cardsSection').style.display = 'block';
-        }
-
-        // Função para gerar cards individuais para WhatsApp
-        function generateWhatsAppCards() {
-            const filteredData = filterData();
+            const totalGeral = dadosFiltrados.reduce((sum, item) => sum + (item.valorRota - item.descontos - item.troco - item.retido), 0);
+            const pendenteGeral = dadosFiltrados.filter(item => item.status === 'PENDENTE').reduce((sum, item) => sum + (item.valorRota - item.descontos - item.troco - item.retido), 0);
             
-            if (filteredData.length === 0) {
-                alert('Nenhum dado encontrado para os filtros selecionados.');
+            relatorio += `📊 RESUMO GERAL\n`;
+            relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            relatorio += `📋 Total de Pedidos: ${dadosFiltrados.length}\n`;
+            relatorio += `💰 Valor Total: R$ ${totalGeral.toFixed(2)}\n`;
+            if (pendenteGeral > 0) {
+                relatorio += `⏳ Total Pendente: R$ ${pendenteGeral.toFixed(2)}\n`;
+            }
+            relatorio += `✅ Total Pago: R$ ${(totalGeral - pendenteGeral).toFixed(2)}\n`;
+            
+            document.getElementById('relatorioBox').textContent = relatorio;
+        }
+        
+        // Gerar relatório de pendências
+        function gerarRelatorioPendencias() {
+            const pendentes = dados.filter(item => item.status === 'PENDENTE');
+            
+            if (pendentes.length === 0) {
+                document.getElementById('relatorioBox').textContent = 'Nenhuma pendência encontrada! 🎉';
                 return;
             }
-
-            const motoboyTotals = {};
             
-            filteredData.forEach(row => {
-                if (row.motoboy) {
-                    if (!motoboyTotals[row.motoboy]) {
-                        motoboyTotals[row.motoboy] = {
-                            rotas: {},
-                            total: 0,
-                            pedidos: [],
-                            dinheiroRecebido: 0,
-                            valorRota: 0,
-                            desconto: 0,
-                            troco: 0,
-                            dinheiroRetido: 0
-                        };
-                    }
-                    
-                    const resultado = calculateResult(row);
-                    motoboyTotals[row.motoboy].total += resultado;
-                    motoboyTotals[row.motoboy].pedidos.push(row);
-                    motoboyTotals[row.motoboy].dinheiroRecebido += parseFloat(row.dinheiroRecebido) || 0;
-                    motoboyTotals[row.motoboy].valorRota += parseFloat(row.valorRota) || 0;
-                    motoboyTotals[row.motoboy].desconto += parseFloat(row.desconto) || 0;
-                    motoboyTotals[row.motoboy].troco += parseFloat(row.troco) || 0;
-                    motoboyTotals[row.motoboy].dinheiroRetido += parseFloat(row.dinheiroRetido) || 0;
-                    
-                    if (row.rota) {
-                        if (!motoboyTotals[row.motoboy].rotas[row.rota]) {
-                            motoboyTotals[row.motoboy].rotas[row.rota] = {
-                                valor: 0,
-                                pedidos: []
-                            };
-                        }
-                        motoboyTotals[row.motoboy].rotas[row.rota].valor += resultado;
-                        motoboyTotals[row.motoboy].rotas[row.rota].pedidos.push(row);
-                    }
+            let relatorio = `🏢 CALÇADOS 24H\n⏳ RELATÓRIO DE PENDÊNCIAS\n`;
+            relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // Agrupar por motoboy
+            const porMotoboy = {};
+            pendentes.forEach(item => {
+                if (!porMotoboy[item.motoboy]) {
+                    porMotoboy[item.motoboy] = [];
                 }
+                porMotoboy[item.motoboy].push(item);
             });
-
-            const periodo = document.getElementById('filterPeriodo').value;
-            const { inicio, fim } = getDateRange(periodo);
             
-            // Gerar mensagens individuais para cada motoboy
-            Object.entries(motoboyTotals).forEach(([motoboy, dados]) => {
-                let message = `🚚 *CALÇADOS 24H*\n`;
-                message += `📅 ${inicio === fim ? inicio : `${inicio} a ${fim}`}\n`;
-                message += `🏍️ *${motoboy.toUpperCase()}*\n\n`;
-
-                // Detalhes por rota
-                Object.entries(dados.rotas).forEach(([rota, rotaData]) => {
-                    message += `📍 *Rota ${rota}* (${rotaData.pedidos.length} pedidos)\n`;
+            Object.keys(porMotoboy).forEach(motoboy => {
+                relatorio += `👤 ${motoboy.toUpperCase()}\n`;
+                relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                
+                let totalMotoboy = 0;
+                
+                porMotoboy[motoboy].forEach(item => {
+                    const valorFinal = item.valorRota - item.descontos - item.troco - item.retido;
                     
-                    rotaData.pedidos.forEach(pedido => {
-                        message += `   • Pedido ${pedido.pedido}: R$ ${calculateResult(pedido).toFixed(2)}\n`;
-                    });
+                    relatorio += `⏳ ${item.data} | Pedido ${item.pedido} | ${item.rota}\n`;
+                    relatorio += `   💰 A Pagar: R$ ${valorFinal.toFixed(2)}\n`;
+                    if (item.obs) relatorio += `   📝 ${item.obs}\n`;
+                    relatorio += `\n`;
                     
-                    message += `   💰 Subtotal: R$ ${rotaData.valor.toFixed(2)}\n\n`;
+                    totalMotoboy += valorFinal;
                 });
                 
-                // Resumo
-                message += `📊 *RESUMO FINANCEIRO*\n`;
-                message += `💰 Dinheiro Recebido: R$ ${dados.dinheiroRecebido.toFixed(2)}\n`;
-                message += `🎯 Valor das Rotas: R$ ${dados.valorRota.toFixed(2)}\n`;
-                message += `🏷️ Descontos: R$ ${dados.desconto.toFixed(2)}\n`;
-                message += `💸 Trocos: R$ ${dados.troco.toFixed(2)}\n`;
-                message += `🏦 Dinheiro Retido: R$ ${dados.dinheiroRetido.toFixed(2)}\n\n`;
-                message += `🔥 *TOTAL FINAL: R$ ${dados.total.toFixed(2)}*\n`;
-                message += `📋 Total de Pedidos: ${dados.pedidos.length}`;
-
-                // Copiar para clipboard automaticamente e mostrar modal
-                navigator.clipboard.writeText(message).then(() => {
-                    document.getElementById('reportContent').textContent = message;
-                    document.getElementById('reportModal').style.display = 'block';
-                    alert(`Relatório do ${motoboy} copiado para área de transferência!`);
-                });
+                relatorio += `💰 Total ${motoboy}: R$ ${totalMotoboy.toFixed(2)}\n`;
+                relatorio += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
             });
-        }
-
-        function copyReport() {
-            const reportContent = document.getElementById('reportContent').textContent;
-            navigator.clipboard.writeText(reportContent).then(() => {
-                alert('Relatório copiado para a área de transferência!');
-            });
-        }
-
-        // Função para fechar modal
-        function closeModal() {
-            document.getElementById('reportModal').style.display = 'none';
-        }
-
-        // Função para exportar para Excel
-        function exportToExcel() {
-            const headers = ['Data', 'Motoboy', 'Rota', 'Status', 'Nº Pedido', 'Dinheiro Recebido', 'Valor da Rota', 'Desconto', 'Troco', 'Dinheiro Retido', 'Resultado'];
             
-            let csvContent = headers.join(',') + '\n';
+            const totalPendente = pendentes.reduce((sum, item) => sum + (item.valorRota - item.descontos - item.troco - item.retido), 0);
             
-            data.forEach(row => {
-                const line = [
-                    row.data || '',
-                    row.motoboy || '',
-                    row.rota || '',
-                    row.status || '',
-                    row.pedido || '',
-                    row.dinheiroRecebido || 0,
-                    row.valorRota || 0,
-                    row.desconto || 0,
-                    row.troco || 0,
-                    row.dinheiroRetido || 0,
-                    calculateResult(row).toFixed(2)
-                ];
-                csvContent += line.join(',') + '\n';
+            relatorio += `📊 RESUMO PENDÊNCIAS\n`;
+            relatorio += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            relatorio += `📋 Pedidos Pendentes: ${pendentes.length}\n`;
+            relatorio += `💰 Total a Pagar: R$ ${totalPendente.toFixed(2)}\n`;
+            relatorio += `👥 Motoboys com Pendência: ${Object.keys(porMotoboy).length}\n`;
+            
+            document.getElementById('relatorioBox').textContent = relatorio;
+        }
+        
+        // Copiar relatório
+        function copiarRelatorio() {
+            const texto = document.getElementById('relatorioBox').textContent;
+            if (texto.includes('Clique em')) {
+                alert('Gere um relatório primeiro!');
+                return;
+            }
+            
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Relatório copiado para a área de transferência! ✅\nCole no WhatsApp.');
+            }).catch(() => {
+                // Fallback para browsers mais antigos
+                const textArea = document.createElement('textarea');
+                textArea.value = texto;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Relatório copiado para a área de transferência! ✅\nCole no WhatsApp.');
             });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `calcados24h_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
-
-        // Função para limpar dados
-        function clearData() {
-            if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
-                data = [];
-                checklist = [];
-                saveData();
-                saveChecklist();
-                loadData();
-                updateChecklist();
-            }
-        }
-
-        // Funções de salvamento (usando variáveis JavaScript em vez de localStorage)
-        function saveData() {
-            window.calcados24h_data = data;
-        }
-
-        function saveMotoboys() {
-            window.calcados24h_motoboys = motoboys;
-        }
-
-        function saveChecklist() {
-            window.calcados24h_checklist = checklist;
-        }
-
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            const modal = document.getElementById('reportModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
-
+        
         // Atalhos de teclado
-        document.addEventListener('keydown', function(event) {
-            // Ctrl + N para nova linha
-            if (event.ctrlKey && event.key === 'n') {
-                event.preventDefault();
-                addRow();
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + Enter = Nova linha
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                adicionarLinha();
             }
             
-            // Ctrl + R para gerar relatório
-            if (event.ctrlKey && event.key === 'r') {
-                event.preventDefault();
-                showReportOptions();
+            // Ctrl + S = Salvar
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                salvarDados();
+                alert('Dados salvos! ✅');
             }
             
-            // Ctrl + E para exportar
-            if (event.ctrlKey && event.key === 'e') {
-                event.preventDefault();
-                exportToExcel();
+            // Escape = Sair do modo de edição
+            if (e.key === 'Escape' && linhaEditando) {
+                e.preventDefault();
+                desabilitarEdicao(linhaEditando);
+                const editBtn = linhaEditando.querySelector('.edit-btn');
+                editBtn.textContent = '✏️';
+                editBtn.title = 'Editar linha';
+                linhaEditando = null;
             }
             
-            // ESC para fechar modal
-            if (event.key === 'Escape') {
-                closeModal();
+            // Enter em inputs = próximo campo
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                e.preventDefault();
+                const inputs = Array.from(document.querySelectorAll('input, select'));
+                const currentIndex = inputs.indexOf(e.target);
+                if (currentIndex < inputs.length - 1) {
+                    inputs[currentIndex + 1].focus();
+                }
             }
         });
-
-        // Permitir Enter no campo de novo motoboy
-        document.getElementById('newMotoboy').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                addMotoboy();
-            }
+        
+        // Auto-save a cada 30 segundos
+        setInterval(() => {
+            salvarDados();
+        }, 30000);
+        
+        // Salvar antes de sair da página
+        window.addEventListener('beforeunload', function() {
+            salvarDados();
         });
     </script>
 </body>
